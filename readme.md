@@ -39,7 +39,7 @@ The code for this step is contained in the first code cell in lines 14 through 4
 
 I started by reading in all the `vehicle` and `non-vehicle` images.  Here is an example of one of each of the `vehicle` and `non-vehicle` classes:
 
-Car Image Example             |  Undistort Image
+Car Image Example          |  Non_car Image Example
 :-------------------------:|:-------------------------:
 ![](images/car_example.png)|  ![](images/non_car_example.png)
 
