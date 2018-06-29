@@ -10,6 +10,8 @@ from skimage.feature import hog
 image_path = './images/car_example.png'
 #image = mpimg.imread(image_path)
 image = cv2.imread(image_path)
+print("Image shape ", image.shape)
+new_img = cv2.resize(image, (320, 320))
 
 
 # Define a function to return HOG features and visualization
@@ -41,17 +43,17 @@ def get_hog_features(img, orient, pix_per_cell, cell_per_block, vis=True,
 
 
 # gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
-gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+#gray = cv2.cvtColor(new_img, cv2.COLOR_BGR2GRAY)
 
 
 # Call our function with vis=True to see an image output
-features, hog_image = get_hog_features(gray, orient=9,
+features, hog_image = get_hog_features(new_img, orient=9,
                                        pix_per_cell=8, cell_per_block=2,
                                        vis=True, feature_vec=False)
 
-cv2.imwrite('./images/hog_car_example.jpg', hog_image)
+cv2.imwrite('./images/hog_car_example.png', hog_image)
 
-cv2.imshow('image', image)
+cv2.imshow('new_image', new_img)
 cv2.waitKey()
 cv2.imshow('hog_image', hog_image)
 cv2.waitKey()
