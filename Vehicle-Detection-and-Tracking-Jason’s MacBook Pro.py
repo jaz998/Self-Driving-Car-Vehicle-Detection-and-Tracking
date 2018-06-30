@@ -7,11 +7,15 @@ from skimage.feature import hog
 
 # Read in our vehicles
 #car_images = glob.glob('*.jpeg')
-image_path＿car = './images/car_example.png'
-img_car = cv2.imread(image_path＿car)
-img_car = np.copy(img_car)
-image_path_non_car = './images/non_car_example.png'
-img_non_car = np.copy(cv2.imread(image_path_non_car))
+image_path = '.\\images\\car_example.png'
+image = mpimg.imread(image_path)
+image = cv2.imread(image_path)
+# print("Image shape ", image.shape)
+# new_img = cv2.cvtColor(cv2.resize(image, (320, 320)), cv2.COLOR_BGR2RGB)
+new_img = cv2.resize(image, (320, 320))
+cv2.imshow('image', new_img)
+cv2.waitKey()
+
 
 
 # Define a function to return HOG features and visualization
@@ -42,30 +46,29 @@ def get_hog_features(img, orient, pix_per_cell, cell_per_block, vis=True,
 
 
 
-gray_car = cv2.cvtColor(img_car, cv2.COLOR_BGR2GRAY)
-gray_non_car = cv2.cvtColor(img_non_car, cv2.COLOR_BGR2GRAY)
+# gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
+gray = cv2.cvtColor(new_img, cv2.COLOR_BGR2GRAY)
+# new_img2 = cv2.cvtColor(new_img, cv2.COLOR_BGR2YCR_CB)
 
-features_car, hog_image_car = get_hog_features(gray_car, orient=9,
+
+
+# Call our function with vis=True to see an image output
+# features, hog_image = get_hog_features(new_img2, orient=9,
+#                                        pix_per_cell=8, cell_per_block=2,
+#                                        vis=True, feature_vec=False)
+
+features, hog_image = get_hog_features(gray, orient=9,
                                        pix_per_cell=8, cell_per_block=2,
                                        vis=True, feature_vec=False)
 
-features_non_car, hog_image_non_car = get_hog_features(gray_non_car, orient=9,
-                                       pix_per_cell=8, cell_per_block=2,
-                                       vis=True, feature_vec=False)
+# features, hog_image = get_hog_features(new_img, orient=8,
+#                                        pix_per_cell=2, cell_per_block=2,
+#                                        vis=True, feature_vec=False)
+# #cv2.imwrite('./images/hog_car_example.png', hog_image)
 
-# Plot the examples
-fig = plt.figure()
-plt.subplot(221)
-plt.imshow(img_car, cmap='gray')
-plt.title('Car Image')
-plt.subplot(222)
-plt.imshow(hog_image_car, cmap='gray')
-plt.title('HOG Visualization Car Image')
-plt.subplots_adjust(hspace=0.5)
-plt.subplot(223)
-plt.imshow(img_non_car, cmap='gray')
-plt.title('Non_car Image')
-plt.subplot(224)
-plt.imshow(hog_image_non_car, cmap='gray')
-plt.title('HOG Visualization non_car image')
-plt.show()
+cv2.imwrite('./images/hog_car_example.png', hog_image)
+
+cv2.imshow('new_image', new_img)
+cv2.waitKey()
+cv2.imshow('hog_image', hog_image)
+cv2.waitKey()
