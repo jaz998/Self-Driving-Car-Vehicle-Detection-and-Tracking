@@ -11,7 +11,7 @@ image_path = './images/car_example.png'
 #image = mpimg.imread(image_path)
 image = cv2.imread(image_path)
 print("Image shape ", image.shape)
-new_img = cv2.resize(image, (320, 320))
+new_img = cv2.cvtColor(cv2.resize(image, (320, 320)), cv2.COLOR_BGR2RGB)
 
 
 # Define a function to return HOG features and visualization
@@ -47,10 +47,14 @@ def get_hog_features(img, orient, pix_per_cell, cell_per_block, vis=True,
 
 
 # Call our function with vis=True to see an image output
-features, hog_image = get_hog_features(new_img, orient=9,
-                                       pix_per_cell=8, cell_per_block=2,
-                                       vis=True, feature_vec=False)
+# features, hog_image = get_hog_features(new_img, orient=9,
+#                                        pix_per_cell=8, cell_per_block=2,
+#                                        vis=True, feature_vec=False)
 
+
+features, hog_image = get_hog_features(new_img, orient=8,
+                                       pix_per_cell=2, cell_per_block=2,
+                                       vis=True, feature_vec=False)
 cv2.imwrite('./images/hog_car_example.png', hog_image)
 
 cv2.imshow('new_image', new_img)
