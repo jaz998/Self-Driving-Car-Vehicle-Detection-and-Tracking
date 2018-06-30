@@ -43,10 +43,13 @@ Car Image Example          |  Non_car Image Example
 
 I then explored different color spaces and different `skimage.hog()` parameters (`orientations`, `pixels_per_cell`, and `cells_per_block`).  I grabbed random images from each of the two classes and displayed them to get a feel for what the `skimage.hog()` output looks like.
 
-Here is an example using the `YCrCb` color space and HOG parameters of `orientations=8`, `pixels_per_cell=(8, 8)` and `cells_per_block=(2, 2)`:
+Here is an example using the `gray` color space and HOG parameters of `orientations=9`, `pixels_per_cell=8` and `cells_per_block=2`:
 
 
-![alt text][image2]
+Car Image Original          |  Car Image Hog
+:-------------------------:|:-------------------------:
+![](images/new_img_car.png)|  ![](images/hot_img_car.png)
+
 
 #### 2. Explain how you settled on your final choice of HOG parameters.
 
