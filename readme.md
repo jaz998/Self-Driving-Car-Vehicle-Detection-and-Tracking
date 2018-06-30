@@ -46,9 +46,7 @@ I then explored different color spaces and different `skimage.hog()` parameters 
 Here is an example using the `gray` color space and HOG parameters of `orientations=9`, `pixels_per_cell=8` and `cells_per_block=2`:
 
 
-Car Image Original          |  Car Image Hog
-:-------------------------:|:-------------------------:
-![](images/new_img_car.png)|  ![](images/hot_img_car.png)
+![](images/HOG_features.png)
 
 
 #### 2. Explain how you settled on your final choice of HOG parameters.
