@@ -55,7 +55,7 @@ I tried various combinations of parameters and...
 
 #### 3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
 
-I trained a linear SVM in my code from line 130 through 209
+I trained a linear SVM in my code using color classifer from line 130 through 209. Using spatial binning of: 32  and  32  histogram bins, and on a training-test split of 0.8-0.2, it achieved a test accuracy is 90.46%. 
 
 ### Sliding Window Search
 
