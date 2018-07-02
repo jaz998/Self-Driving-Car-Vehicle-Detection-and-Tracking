@@ -5,6 +5,13 @@ import cv2
 import glob
 from skimage.feature import hog
 from sklearn.preprocessing import StandardScaler
+import time
+from sklearn.svm import LinearSVC
+from sklearn.preprocessing import StandardScaler
+from sklearn.cross_validation import train_test_split
+
+
+
 
 # Read in our vehicles
 #car_images = glob.glob('*.jpeg')
@@ -114,45 +121,90 @@ def extract_features(imgs, cspace='RGB', spatial_size=(64, 64),
     return features
 
 
+########## Loading the data ###########
+
 images_car = glob.glob('../vehicles/GTI_MiddleClose/*.png')
 images_non_car = glob.glob('../non-vehicles/GTI/*.png')
+images = glob.glob(('../all_images/*vehicles/*/*'))
 
 cars = []
 notcars = []
-for image in images_car:
-    # if 'image' in image or 'extra' in image:
-    #     notcars.append(image)
-    # else:
+for image in images:
+    if 'non' in image:
+        notcars.append(image)
+    else:
         cars.append(image)
 
-for image in images_non_car:
-    notcars.append(image)
+print('Number of non_car images:', len(notcars))
+print('Number of car_images', len(cars))
 
-car_features = extract_features(cars, cspace='RGB', spatial_size=(64, 64),
-                                hist_bins=64, hist_range=(0, 256))
-notcar_features = extract_features(notcars, cspace='RGB', spatial_size=(64, 64),
-                                   hist_bins=64, hist_range=(0, 256))
+# Specifying spatial and histbin parameters
+spatial = 32
+histbin = 32
 
-if len(car_features) > 0:
-    # Create an array stack of feature vectors
-    X = np.vstack((car_features, notcar_features)).astype(np.float64)
-    # Fit a per-column scaler
-    X_scaler = StandardScaler().fit(X)
-    # Apply the scaler to X
-    scaled_X = X_scaler.transform(X)
-    car_ind = np.random.randint(0, len(cars))
-    # Plot an example of raw and scaled features
-    fig = plt.figure(figsize=(12, 4))
-    plt.subplot(131)
-    plt.imshow(mpimg.imread(cars[car_ind]))
-    plt.title('Original Image')
-    plt.subplot(132)
-    plt.plot(X[car_ind])
-    plt.title('Raw Features')
-    plt.subplot(133)
-    plt.plot(scaled_X[car_ind])
-    plt.title('Normalized Features')
-    fig.tight_layout()
-    plt.show()
-else:
-    print('Your function only returns empty feature vectors...')
+car_features = extract_features(cars, cspace='RGB', spatial_size=(spatial, spatial),
+                                hist_bins=histbin, hist_range=(0, 256))
+notcar_features = extract_features(notcars, cspace='RGB', spatial_size=(spatial, spatial),
+                                   hist_bins=histbin, hist_range=(0, 256))
+
+# if len(car_features) > 0:
+#     # Create an array stack of feature vectors
+#     X = np.vstack((car_features, notcar_features)).astype(np.float64)
+#     # Fit a per-column scaler
+#     X_scaler = StandardScaler().fit(X)
+#     # Apply the scaler to X
+#     scaled_X = X_scaler.transform(X)
+#     car_ind = np.random.randint(0, len(cars))
+#     # Plot an example of raw and scaled features
+#     fig = plt.figure(figsize=(12, 4))
+#     plt.subplot(131)
+#     plt.imshow(mpimg.imread(cars[car_ind]))
+#     plt.title('Original Image')
+#     plt.subplot(132)
+#     plt.plot(X[car_ind])
+#     plt.title('Raw Features')
+#     plt.subplot(133)
+#     plt.plot(scaled_X[car_ind])
+#     plt.title('Normalized Features')
+#     fig.tight_layout()
+#     plt.show()
+# else:
+#     print('Your function only returns empty feature vectors...')
+
+########### training a color classifier #################
+
+# Create an array stack of feature vectors
+X = np.vstack((car_features, notcar_features)).astype(np.float64)
+
+# Define the labels vector
+y = np.hstack((np.ones(len(car_features)), np.zeros(len(notcar_features))))
+
+# Split up data into randomized training and test sets
+rand_state = np.random.randint(0,100)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state=rand_state)
+
+# Fit a per-column scaler only on the training data
+X_scaler = StandardScaler().fit(X_train)
+# Apply the scaler to X_train and X_test
+X_train = X_scaler.transform(X_train)
+X_test = X_scaler.transform(X_test)
+
+print('Using spatial binning of:', spatial, ' and ', histbin, ' histogram bins')
+print('Features vecotr length:', len(X_train[0]))
+# Use a linear SVC
+svc = LinearSVC()
+# Check the training time for the SVC
+t = time.time()
+svc.fit(X_train, y_train)
+t2 = time.time()
+print(round(t2-t, 2), 'Seconds to train SVC...')
+# Check the score of the SVC
+print('Test accuracy of SVC =', round(svc.score(X_test, y_test), 4))
+# Check the prediction of a single sample
+t = time.time()
+n_predict = 10
+print('My SVC predicts: ', svc.predict(X_test[0:n_predict]))
+print('For these', n_predict, 'labels: ', y_test[0:n_predict])
+t2 = time.time()
+print(round(t2-t, 5), 'Seconds to predict', n_predict,'labels with SVC')
+
