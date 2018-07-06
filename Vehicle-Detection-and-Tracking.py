@@ -12,7 +12,6 @@ from sklearn.cross_validation import train_test_split
 
 
 
-
 # Read in our vehicles
 #car_images = glob.glob('*.jpeg')
 # image_path＿car = './images/car_example.png'
@@ -92,45 +91,45 @@ def extract_hog_features(imgs, cspace = 'RGB', orient = 9, pix_per_cell = 8, cel
 
 ############ Combine and Normalize Features #########
 
-# # Define a function to compute binned color features
-# def bin_spatial(img, size=(64, 64)):
-#     # Use cv2.resize().ravel() to create the feature vector
-#     features = cv2.resize(img, size).ravel()
-#     # Return the feature vector
-#     return features
-#
-#
-# # Define a function to compute color histogram features
-# def color_hist(img, nbins=32, bins_range=(0, 256)):
-#     # Compute the histogram of the color channels separately
-#     channel1_hist = np.histogram(img[:, :, 0], bins=nbins, range=bins_range)
-#     channel2_hist = np.histogram(img[:, :, 1], bins=nbins, range=bins_range)
-#     channel3_hist = np.histogram(img[:, :, 2], bins=nbins, range=bins_range)
-#     # Concatenate the histograms into a single feature vector
-#     hist_features = np.concatenate((channel1_hist[0], channel2_hist[0], channel3_hist[0]))
-#     # Return the individual histograms, bin_centers and feature vector
-#     return hist_features
-#
-#
-# # Define a function to extract features from a list of images
-# # Have this function call bin_spatial() and color_hist()
-# def extract_features_color(imgs, cspace='RGB', spatial_size=(64, 64),
-#                            hist_bins=32, hist_range=(0, 256)):
-#     # Create a list to append feature vectors to
-#     features = []
-#     # Iterate through the list of images
-#     for item in imgs:
-#         # Read in each one by one
-#         img = mpimg.imread(item)
-#         # apply color conversion if other than 'RGB'
-#         # Apply bin_spatial() to get spatial color features
-#         spatial_features = bin_spatial(img, spatial_size)
-#         # Apply color_hist() to get color histogram features
-#         hist_features = color_hist(img, hist_bins, hist_range)
-#         # Append the new feature vector to the features list
-#         features.append(np.concatenate((spatial_features, hist_features)))
-#     # Return list of feature vectors
-#     return features
+# Define a function to compute binned color features
+def bin_spatial(img, size=(64, 64)):
+    # Use cv2.resize().ravel() to create the feature vector
+    features = cv2.resize(img, size).ravel()
+    # Return the feature vector
+    return features
+
+
+# Define a function to compute color histogram features
+def color_hist(img, nbins=32, bins_range=(0, 256)):
+    # Compute the histogram of the color channels separately
+    channel1_hist = np.histogram(img[:, :, 0], bins=nbins, range=bins_range)
+    channel2_hist = np.histogram(img[:, :, 1], bins=nbins, range=bins_range)
+    channel3_hist = np.histogram(img[:, :, 2], bins=nbins, range=bins_range)
+    # Concatenate the histograms into a single feature vector
+    hist_features = np.concatenate((channel1_hist[0], channel2_hist[0], channel3_hist[0]))
+    # Return the individual histograms, bin_centers and feature vector
+    return hist_features
+
+
+# Define a function to extract features from a list of images
+# Have this function call bin_spatial() and color_hist()
+def extract_features_color(imgs, cspace='RGB', spatial_size=(64, 64),
+                           hist_bins=32, hist_range=(0, 256)):
+    # Create a list to append feature vectors to
+    features = []
+    # Iterate through the list of images
+    for item in imgs:
+        # Read in each one by one
+        img = mpimg.imread(item)
+        # apply color conversion if other than 'RGB'
+        # Apply bin_spatial() to get spatial color features
+        spatial_features = bin_spatial(img, spatial_size)
+        # Apply color_hist() to get color histogram features
+        hist_features = color_hist(img, hist_bins, hist_range)
+        # Append the new feature vector to the features list
+        features.append(np.concatenate((spatial_features, hist_features)))
+    # Return list of feature vectors
+    return features
 
 
 ########## Loading the data ###########
@@ -148,15 +147,14 @@ for image in images:
         cars.append(image)
 
 
-print('cars [0]', cars[0])
 
 
 # Use a smaller sample for testing hog features classifier
-sample_size = 5000
+sample_size = 500
 hog_cars = cars[0:sample_size]
 hog_notcars = notcars[0:sample_size]
 
-print('umber of car_images', len(hog_cars))
+print('Number of car_images', len(hog_cars))
 print('Number of non_car images:', len(hog_notcars))
 print('hog car[0]', cars[0])
 
@@ -186,23 +184,28 @@ print(round(t2-t),2), ' seconds to extract hog features'
 spatial = 32
 histbin = 32
 
-car_features = extract_features_color(cars, cspace='RGB', spatial_size=(spatial, spatial),
+color_car_features = extract_features_color(cars, cspace='RGB', spatial_size=(spatial, spatial),
                                       hist_bins=histbin, hist_range=(0, 256))
-notcar_features = extract_features_color(notcars, cspace='RGB', spatial_size=(spatial, spatial),
+color_notcar_features = extract_features_color(notcars, cspace='RGB', spatial_size=(spatial, spatial),
                                          hist_bins=histbin, hist_range=(0, 256))
 
 
 print('hog car features', hog_car_features[0])
+
+combined_car_features = np.concatenate(hog_car_features, color_car_features)
+combined_notcar_features = np.concatenate(hog_notcar_features, color_notcar_features)
+
+
 #print('hog notcar features', hog_notcar_features[0].shape)
 # print('not car feature len', len(notcar_features.shape()))
 
 ########### training a color classifier #################
 
 # Create an array stack of feature vectors
-X = np.vstack((hog_car_features, hog_car_features)).astype(np.float64)
+X = np.vstack((combined_car_features, combined_notcar_features)).astype(np.float64)
 
 # Define the labels vector
-y = np.hstack((np.ones(len(hog_car_features)), np.zeros(len(hog_notcar_features))))
+y = np.hstack((np.ones(len(combined_car_features)), np.zeros(len(combined_notcar_features))))
 
 print('X shape', X.shape)
 print ('y shape', y.shape)
