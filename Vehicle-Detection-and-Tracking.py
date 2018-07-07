@@ -42,7 +42,6 @@ def get_hog_features(img, orient, pix_per_cell, cell_per_block, vis=False,
     if vis:
         return hog_features, hog_image
     else:
-        print('Get hog features', hog_features)
         return hog_features
 
 
@@ -142,9 +141,9 @@ def extract_features_color(imgs, cspace='RGB', spatial_size=(64, 64),
 
 ########## Loading the data ###########
 
-images_car = glob.glob('..\\vehicles\\GTI_MiddleClose\\*.png')
-images_non_car = glob.glob('..\\non-vehicles\\GTI\\*.png')
-images = glob.glob(('..\\all_images\\*vehicles\\*\\*'))
+images_car = glob.glob('../vehicles/GTI_MiddleClose/*.png')
+images_non_car = glob.glob('../non-vehicles/GTI/*.png')
+images = glob.glob(('../all_images/*vehicles/*/*'))
 
 cars = []
 notcars = []
@@ -197,7 +196,6 @@ color_notcar_features = extract_features_color(hog_notcars, cspace='RGB', spatia
 
 print('hog car features shape', hog_car_features[0].shape)
 print('color car features shape', color_car_features[0].shape)
-combined_car_features = np.concatenate((hog_car_features, color_car_features))
 # combined_notcar_features = np.concatenate((hog_notcar_features, color_notcar_features))
 
 
