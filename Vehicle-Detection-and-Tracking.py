@@ -39,8 +39,6 @@ def get_hog_features(img, orient, pix_per_cell, cell_per_block, vis=False,
                       block_norm='L2-Hys', transform_sqrt=True,
                       visualise=True, feature_vector=feature_vec)
 
-
-
     if vis:
         return hog_features, hog_image
     else:
@@ -50,7 +48,7 @@ def get_hog_features(img, orient, pix_per_cell, cell_per_block, vis=False,
 
 
 # Define a function to extract features from a list of images
-def extract_hog_features(imgs, cspace = 'RGB', orient = 9, pix_per_cell = 8, cell_per_block = 2, hog_channel = 0):
+def extract_features(imgs, cspace ='RGB', orient = 9, pix_per_cell = 8, cell_per_block = 2, hog_channel = 0, spatial_size=(64, 64), hist_bins=32, hist_range=(0, 256)):
     # Create a list to append feature vector to
     features = []
     # Iterate through the list of images
@@ -74,7 +72,9 @@ def extract_hog_features(imgs, cspace = 'RGB', orient = 9, pix_per_cell = 8, cel
             feature_image = np.copy(image)
             #feature_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
-        print('Feature image shape', feature_image.shape)
+
+
+
 
         # Call get_hog_features() with vis=False, feature_vec=True
         if hog_channel == 'ALL':
@@ -85,7 +85,14 @@ def extract_hog_features(imgs, cspace = 'RGB', orient = 9, pix_per_cell = 8, cel
         else:
             hog_features = get_hog_features(feature_image[:,:,hog_channel], orient, pix_per_cell, cell_per_block, vis=False, feature_vec=True)
             print('feature image channel 0', feature_image[:,:,hog_channel].shape)
-        features.append(hog_features)
+
+        # Color Features
+        # Apply bin_spatial() to get spatial color features
+        spatial_features = bin_spatial(feature_image, spatial_size)
+        # Apply color_hist() to get color histogram features
+        hist_features = color_hist(feature_image, hist_bins, hist_range)
+        # Append the new feature vector to the features list
+        features.append(np.concatenate((spatial_features, hist_features, hog_features)))
         print('features', features)
     return features
 
@@ -128,15 +135,16 @@ def extract_features_color(imgs, cspace='RGB', spatial_size=(64, 64),
         hist_features = color_hist(img, hist_bins, hist_range)
         # Append the new feature vector to the features list
         features.append(np.concatenate((spatial_features, hist_features)))
+
     # Return list of feature vectors
     return features
 
 
 ########## Loading the data ###########
 
-images_car = glob.glob('../vehicles/GTI_MiddleClose/*.png')
-images_non_car = glob.glob('../non-vehicles/GTI/*.png')
-images = glob.glob(('../all_images/*vehicles/*/*'))
+images_car = glob.glob('..\\vehicles\\GTI_MiddleClose\\*.png')
+images_non_car = glob.glob('..\\non-vehicles\\GTI\\*.png')
+images = glob.glob(('..\\all_images\\*vehicles\\*\\*'))
 
 cars = []
 notcars = []
@@ -156,8 +164,6 @@ hog_notcars = notcars[0:sample_size]
 
 print('Number of car_images', len(hog_cars))
 print('Number of non_car images:', len(hog_notcars))
-print('hog car[0]', cars[0])
-
 # print('hog cars shape', hog_cars[0].shape)
 # print('hog notcars shape', hog_notcars[0].shape)
 
@@ -172,8 +178,8 @@ hog_channel = 0
 
 # Extracting hog features
 t = time.time()
-hog_car_features = extract_hog_features(hog_cars, cspace=colorspace, orient = orient, pix_per_cell= pix_per_cell, cell_per_block=cell_per_block, hog_channel=hog_channel)
-hog_notcar_features = extract_hog_features(hog_notcars, cspace=colorspace, orient=orient, pix_per_cell=pix_per_cell, cell_per_block=cell_per_block, hog_channel=hog_channel)
+hog_car_features = extract_features(hog_cars, cspace=colorspace, orient = orient, pix_per_cell= pix_per_cell, cell_per_block=cell_per_block, hog_channel=hog_channel)
+hog_notcar_features = extract_features(hog_notcars, cspace=colorspace, orient=orient, pix_per_cell=pix_per_cell, cell_per_block=cell_per_block, hog_channel=hog_channel)
 t2=time.time()
 print(round(t2-t),2), ' seconds to extract hog features'
 
@@ -184,16 +190,15 @@ print(round(t2-t),2), ' seconds to extract hog features'
 spatial = 32
 histbin = 32
 
-color_car_features = extract_features_color(cars, cspace='RGB', spatial_size=(spatial, spatial),
+color_car_features = extract_features_color(hog_cars, cspace='RGB', spatial_size=(spatial, spatial),
                                       hist_bins=histbin, hist_range=(0, 256))
-color_notcar_features = extract_features_color(notcars, cspace='RGB', spatial_size=(spatial, spatial),
+color_notcar_features = extract_features_color(hog_notcars, cspace='RGB', spatial_size=(spatial, spatial),
                                          hist_bins=histbin, hist_range=(0, 256))
 
-
-print('hog car features', hog_car_features[0])
-
-combined_car_features = np.concatenate(hog_car_features, color_car_features)
-combined_notcar_features = np.concatenate(hog_notcar_features, color_notcar_features)
+print('hog car features shape', hog_car_features[0].shape)
+print('color car features shape', color_car_features[0].shape)
+combined_car_features = np.concatenate((hog_car_features, color_car_features))
+# combined_notcar_features = np.concatenate((hog_notcar_features, color_notcar_features))
 
 
 #print('hog notcar features', hog_notcar_features[0].shape)
@@ -202,10 +207,10 @@ combined_notcar_features = np.concatenate(hog_notcar_features, color_notcar_feat
 ########### training a color classifier #################
 
 # Create an array stack of feature vectors
-X = np.vstack((combined_car_features, combined_notcar_features)).astype(np.float64)
+X = np.vstack((hog_car_features, hog_notcar_features)).astype(np.float64)
 
 # Define the labels vector
-y = np.hstack((np.ones(len(combined_car_features)), np.zeros(len(combined_notcar_features))))
+y = np.hstack((np.ones(len(hog_car_features)), np.zeros(len(hog_notcar_features))))
 
 print('X shape', X.shape)
 print ('y shape', y.shape)
