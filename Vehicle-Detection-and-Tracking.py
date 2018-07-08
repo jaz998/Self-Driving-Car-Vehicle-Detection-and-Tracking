@@ -72,6 +72,7 @@ def find_cars(img, ystart, ystop, scale, svc, X_scaler, orient, pix_per_cell, ce
             spatial_features = bin_spatial(subimg, size=spatial_size)
             hist_features = color_hist(subimg, nbins=hist_bins)
 
+
             # Scale features and make a prediction
             test_features = X_scaler.transform(
                 np.hstack((spatial_features, hist_features, hog_features)).reshape(1, -1))
@@ -167,7 +168,6 @@ def search_windows(img, windows, clf, scaler, color_space='RGB',
                             cell_per_block=cell_per_block,
                             hog_channel=hog_channel, spatial_feat=spatial_feat,
                             hist_feat=hist_feat, hog_feat=hog_feat)
-        print('search_windows features shape', features.shape)
         #5) Scale extracted features to be fed to classifier
         test_features = scaler.transform(np.array(features).reshape(1, -1))
         #6) Predict using your classifier
@@ -227,7 +227,6 @@ def single_img_features(img, color_space='RGB', spatial_size=(32, 32),
 
     #9) Return concatenated array of features
     result = np.concatenate(img_features)
-    print('single image features result shape', result.shape)
     return result
 
 # Define a function to return HOG features and visualization
@@ -286,17 +285,14 @@ def extract_features(imgs, cspace ='RGB', orient = 9, pix_per_cell = 8, cell_per
         if hog_channel == 'ALL':
             hog_features = []
             for channel in range(feature_image.shape[2]):
-                hog_features.append(get_hog_features(feature_image[:,:,hog_channel], orient, pix_per_cell, cell_per_block, vis=False, feature_vec=True))
+                hog_features.append(get_hog_features(feature_image[:,:,channel], orient, pix_per_cell, cell_per_block, vis=False, feature_vec=True))
             hog_features = np.ravel(hog_features)
         else:
-            hog_features = get_hog_features(feature_image[:,:,hog_channel], orient, pix_per_cell, cell_per_block, vis=False, feature_vec=True)
-            print('feature image channel 0', feature_image[:,:,hog_channel].shape)
+            hog_features = get_hog_features(feature_image[:,:,channel], orient, pix_per_cell, cell_per_block, vis=False, feature_vec=True)
 
         # Color Features
         # Apply bin_spatial() to get spatial color features
         spatial_features = bin_spatial(feature_image, spatial_size)
-        print('feature image shape', feature_image.shape)
-        print('spatial_size', spatial_size)
         # Apply color_hist() to get color histogram features
         hist_features = color_hist(feature_image, hist_bins, hist_range)
         # Append the new feature vector to the features list
@@ -304,16 +300,11 @@ def extract_features(imgs, cspace ='RGB', orient = 9, pix_per_cell = 8, cell_per
         file_features.append(spatial_features)
         file_features.append(hist_features)
         file_features.append(hog_features)
-        print('file_features item [0] ', count+1, ' shape', file_features[0].shape)
-        print('file_features item [0] length ', count+1, ' shape', len(file_features[0]))
-        print('file_features item [1] ', count+1, ' shape', file_features[1].shape)
-        print('file_features item [1] length ', count+1, ' shape', len(file_features[1]))
-        print('file_features item [2] ', count+1, ' shape', file_features[2].shape)
-        print('file_features item [2] length ', count+1, ' shape', len(file_features[2]))
+
 
         features.append(np.concatenate(file_features))
-        print('features item ', count+1, ' shape', features[count].shape)
         count = count + 1
+        print('image ', count)
     return features
 
 ############ Combine and Normalize Features #########
@@ -362,15 +353,15 @@ def extract_features_color(imgs, cspace='RGB', spatial_size=(64, 64),
 
 ########## Loading the data ###########
 
-# # Mac OS Path
-# images_car = glob.glob('../vehicles/GTI_MiddleClose/*.png')
-# images_non_car = glob.glob('../non-vehicles/GTI/*.png')
-# images = glob.glob(('../all_images/*vehicles/*/*'))
+# Mac OS Path
+images_car = glob.glob('../vehicles/GTI_MiddleClose/*.png')
+images_non_car = glob.glob('../non-vehicles/GTI/*.png')
+images = glob.glob(('../all_images/*vehicles/*/*'))
 
-# Windows Path
-images_car = glob.glob('..\\vehicles\\GTI_MiddleClose\\*.png')
-images_non_car = glob.glob('..\\non-vehicles\\GTI\\*.png')
-images = glob.glob(('..\\all_images\\*vehicles\\*\\*'))
+# # Windows Path
+# images_car = glob.glob('..\\vehicles\\GTI_MiddleClose\\*.png')
+# images_non_car = glob.glob('..\\non-vehicles\\GTI\\*.png')
+# images = glob.glob(('..\\all_images\\*vehicles\\*\\*'))
 
 cars = []
 notcars = []
@@ -384,31 +375,31 @@ for image in images:
 
 
 # Use a smaller sample for testing hog features classifier
-sample_size = 2
+sample_size = 500
 hog_cars = cars[0:sample_size]
 hog_notcars = notcars[0:sample_size]
 
 print('Number of car_images', len(hog_cars))
 print('Number of non_car images:', len(hog_notcars))
-# print('hog cars shape', hog_cars[0].shape)
-# print('hog notcars shape', hog_notcars[0].shape)
+
 
 
 # Defining the parameters for hog features
-colorspace = 'RGB'
+colorspace = 'YCrCb'
 orient = 9
 pix_per_cell = 8
 cell_per_block = 2
-hog_channel = 0
+hog_channel = 'ALL'
 # Specifying spatial and histbin parameters
-spatial = 16
-histbin = 16
+spatial = (32, 32)
+histbin = 32
+
 
 
 # Extracting hog features
 t = time.time()
-hog_car_features = extract_features(hog_cars, cspace=colorspace, orient = orient, pix_per_cell= pix_per_cell, cell_per_block=cell_per_block, hog_channel=hog_channel, spatial_size=(spatial, spatial), hist_bins=histbin)
-hog_notcar_features = extract_features(hog_notcars, cspace=colorspace, orient=orient, pix_per_cell=pix_per_cell, cell_per_block=cell_per_block, hog_channel=hog_channel, spatial_size=(spatial, spatial), hist_bins=histbin)
+hog_car_features = extract_features(hog_cars, cspace=colorspace, orient = orient, pix_per_cell= pix_per_cell, cell_per_block=cell_per_block, hog_channel=hog_channel, spatial_size=spatial, hist_bins=histbin)
+hog_notcar_features = extract_features(hog_notcars, cspace=colorspace, orient=orient, pix_per_cell=pix_per_cell, cell_per_block=cell_per_block, hog_channel=hog_channel, spatial_size=spatial, hist_bins=histbin)
 t2=time.time()
 print(round(t2-t),2), ' seconds to extract hog features'
 
@@ -473,28 +464,42 @@ print(round(t2-t, 5), 'Seconds to predict', n_predict,'labels with SVC')
 
 #print('hog notcar features', hog_notcar_features[0].shape)
 # print('not car feature len', len(notcar_features.shape()))
-#image2 = mpimg.imread('../test_images/test1.jpg') # Mac OS path
-image2 = mpimg.imread('..\\test_images\\test1.jpg') # Windows Path
-draw_image = np.copy(image2)
+image2 = mpimg.imread('../test_images/test1.jpg') # Mac OS path
+#image2 = mpimg.imread('..\\test_images\\test1.jpg') # Windows Path
+# draw_image = np.copy(image2)
+#
+#
+#
+#
+# windows = slide_window(image2, x_start_stop=[None, None], y_start_stop=[None, None],
+#                     xy_window=(96, 96), xy_overlap=(0.5, 0.5))
+#
+# hot_windows = search_windows(image2, windows, svc, X_scaler, color_space=colorspace,
+#                         spatial_size=spatial_size, hist_bins=hist_bins,
+#                         orient=orient, pix_per_cell=pix_per_cell,
+#                         cell_per_block=cell_per_block,
+#                         hog_channel=hog_channel, spatial_feat=True,
+#                         hist_feat=True, hog_feat=True)
+#
+# window_img = draw_boxes(draw_image, hot_windows, color=(0, 0, 255), thick=6)
+#
+# plt.imshow(window_img)
+# plt.show()
 
-spatial_size = (16, 16) # Spatial binning dimensions
-hist_bins = 16
 
+########################### Hog Sub-sampling Window Search ###################################
 
-windows = slide_window(image2, x_start_stop=[None, None], y_start_stop=[None, None],
-                    xy_window=(96, 96), xy_overlap=(0.5, 0.5))
+# Defining variable values
+ystart = 400
+ystop = 656
+scale = 1.5
 
-hot_windows = search_windows(image2, windows, svc, X_scaler, color_space=colorspace,
-                        spatial_size=spatial_size, hist_bins=hist_bins,
-                        orient=orient, pix_per_cell=pix_per_cell,
-                        cell_per_block=cell_per_block,
-                        hog_channel=hog_channel, spatial_feat=True,
-                        hist_feat=True, hog_feat=True)
-
-window_img = draw_boxes(draw_image, hot_windows, color=(0, 0, 255), thick=6)
-
-plt.imshow(window_img)
+out_img = find_cars(image2, ystart, ystop, scale, svc, X_scaler, orient, pix_per_cell, cell_per_block, spatial, histbin)
+plt.imshow(out_img)
 plt.show()
+
+
+
 
 
 
