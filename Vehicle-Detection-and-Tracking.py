@@ -416,7 +416,7 @@ for image in images:
 
 
 # Use a smaller sample for testing hog features classifier
-sample_size = 2000
+sample_size = 5000
 hog_cars = cars[0:sample_size]
 hog_notcars = notcars[0:sample_size]
 
