@@ -61,9 +61,11 @@ I trained a linear SVM in my code using color classifer from line 130 through 20
 
 #### 1. Describe how (and identify where in your code) you implemented a sliding window search.  How did you decide what scales to search and how much to overlap windows?
 
-I decided to search random window positions at random scales all over the image and came up with this (ok just kidding I didn't actually ;):
+The sliding window function was implemented in code line 137 to line 176, and line 516 to line 529. 
 
-![alt text][image3]
+I decided to search random window positions using a window size of 96 by 96, and xy overlapping of 0.5 and 0.5. 
+
+![](images/sliding_windows.png)
 
 #### 2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
 
