@@ -10,6 +10,7 @@ from sklearn.svm import LinearSVC
 from sklearn.preprocessing import StandardScaler
 from sklearn.cross_validation import train_test_split
 from scipy.ndimage.measurements import label
+from moviepy.editor import VideoFileClip
 
 
 def add_heat(heatmap, bbox_list):
@@ -505,27 +506,27 @@ print(round(t2-t, 5), 'Seconds to predict', n_predict,'labels with SVC')
 
 #print('hog notcar features', hog_notcar_features[0].shape)
 # print('not car feature len', len(notcar_features.shape()))
-image2 = mpimg.imread('../test_images/test1.jpg') # Mac OS path
-#image2 = mpimg.imread('..\\test_images\\test1.jpg') # Windows Path
-# draw_image = np.copy(image2)
-#
-#
-#
-#
-# windows = slide_window(image2, x_start_stop=[None, None], y_start_stop=[None, None],
-#                     xy_window=(96, 96), xy_overlap=(0.5, 0.5))
-#
-# hot_windows = search_windows(image2, windows, svc, X_scaler, color_space=colorspace,
-#                         spatial_size=spatial_size, hist_bins=hist_bins,
-#                         orient=orient, pix_per_cell=pix_per_cell,
-#                         cell_per_block=cell_per_block,
-#                         hog_channel=hog_channel, spatial_feat=True,
-#                         hist_feat=True, hog_feat=True)
-#
-# window_img = draw_boxes(draw_image, hot_windows, color=(0, 0, 255), thick=6)
-#
-# plt.imshow(window_img)
-# plt.show()
+#image2 = mpimg.imread('../test_images/test1.jpg') # Mac OS path
+image2 = mpimg.imread('..\\test_images\\test1.jpg') # Windows Path
+draw_image = np.copy(image2)
+
+
+
+
+windows = slide_window(image2, x_start_stop=[None, None], y_start_stop=[0, 475],
+                    xy_window=(96, 96), xy_overlap=(0.5, 0.5))
+
+hot_windows = search_windows(image2, windows, svc, X_scaler, color_space=colorspace,
+                        spatial_size= spatial, hist_bins=histbin,
+                        orient=orient, pix_per_cell=pix_per_cell,
+                        cell_per_block=cell_per_block,
+                        hog_channel=hog_channel, spatial_feat=True,
+                        hist_feat=True, hog_feat=True)
+
+window_img = draw_boxes(draw_image, hot_windows, color=(0, 0, 255), thick=6)
+
+plt.imshow(window_img)
+plt.show()
 
 
 ########################### Hog Sub-sampling Window Search ###################################
@@ -554,17 +555,53 @@ heatmap = np.clip(heat, 0, 255)
 labels = label(heatmap)
 draw_img = draw_labeled_bboxes(np.copy(image2), labels)
 
-fig = plt.figure()
-plt.subplot(121)
-plt.imshow(draw_img)
-plt.title('Car Positions')
-plt.subplot(122)
-plt.imshow(heatmap, cmap='hot')
-plt.title('Heat Map')
-fig.tight_layout()
-plt.show()
+
+def process_frame(frame):
+    out_img, coordinates_list = find_cars(frame, ystart, ystop, scale, svc, X_scaler, orient, pix_per_cell,
+                                          cell_per_block, spatial, histbin)
+
+    heat = np.zeros_like(frame[:, :, 0]).astype(np.float)
+
+    # Add heat to each box in box list
+    heat = add_heat(heat, coordinates_list)
+
+    # Apply threshold to help remove false positives
+    heat = apply_threshold(heat, 1)
+
+    # Visualize the heatmap when displaying
+    heatmap = np.clip(heat, 0, 255)
+
+    # Find final boxes from heatmap using label function
+    labels = label(heatmap)
+    draw_img = draw_labeled_bboxes(np.copy(frame), labels)
+    return draw_img
 
 
+
+# fig = plt.figure()
+# plt.subplot(121)
+# plt.imshow(draw_img)
+# plt.title('Car Positions')
+# plt.subplot(122)
+# plt.imshow(heatmap, cmap='hot')
+# plt.title('Heat Map')
+# fig.tight_layout()
+# plt.show()
+
+# ############ Read the video #################################
+#
+# output_video = '../test_videos_output/output_video.mp4'
+# project_video = '../test_video.mp4'
+# #clip1 = VideoFileClip(project_video).subclip(0,3)
+# #clip1 = VideoFileClip(project_video).subclip(38, 42)
+# clip1 = VideoFileClip(project_video)
+# #print("###################Now running processing frame - video#######")
+# processed_clip1 = clip1.fl_image(process_frame) #NOTE: this function expects color images!!
+# processed_clip1.write_videofile(output_video, audio=False)
+#
+# # result_process_frame = process_frame(road_image)
+# # cv2.imshow("Result processed frame", result_process_frame)
+# # cv2.waitKey()
 
 
 
