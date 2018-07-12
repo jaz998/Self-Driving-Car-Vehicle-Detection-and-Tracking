@@ -400,7 +400,7 @@ images_car = glob.glob('../vehicles/GTI_MiddleClose/*.png')
 images_non_car = glob.glob('../non-vehicles/GTI/*.png')
 images = glob.glob(('../all_images/*vehicles/*/*'))
 
-# Windows Path
+# # Windows Path
 # images_car = glob.glob('..\\vehicles\\GTI_MiddleClose\\*.png')
 # images_non_car = glob.glob('..\\non-vehicles\\GTI\\*.png')
 # images = glob.glob(('..\\all_images\\*vehicles\\*\\*'))
@@ -417,7 +417,7 @@ for image in images:
 
 
 # Use a smaller sample for testing hog features classifier
-sample_size = 5000
+sample_size = 2
 hog_cars = cars[0:sample_size]
 hog_notcars = notcars[0:sample_size]
 
@@ -508,25 +508,25 @@ print(round(t2-t, 5), 'Seconds to predict', n_predict,'labels with SVC')
 # print('not car feature len', len(notcar_features.shape()))
 image2 = mpimg.imread('../test_images/test1.jpg') # Mac OS path
 #image2 = mpimg.imread('..\\test_images\\test1.jpg') # Windows Path
-draw_image = np.copy(image2)
-
-
-
-
-windows = slide_window(image2, x_start_stop=[None, None], y_start_stop=[350, 720],
-                    xy_window=(96, 96), xy_overlap=(0.5, 0.5))
-
-hot_windows = search_windows(image2, windows, svc, X_scaler, color_space=colorspace,
-                        spatial_size= spatial, hist_bins=histbin,
-                        orient=orient, pix_per_cell=pix_per_cell,
-                        cell_per_block=cell_per_block,
-                        hog_channel=hog_channel, spatial_feat=True,
-                        hist_feat=True, hog_feat=True)
-
-window_img = draw_boxes(draw_image, hot_windows, color=(0, 0, 255), thick=6)
-
-plt.imshow(window_img)
-plt.show()
+# draw_image = np.copy(image2)
+#
+#
+#
+#
+# windows = slide_window(image2, x_start_stop=[None, None], y_start_stop=[None, None],
+#                     xy_window=(96, 96), xy_overlap=(0.5, 0.5))
+#
+# hot_windows = search_windows(image2, windows, svc, X_scaler, color_space=colorspace,
+#                         spatial_size=spatial_size, hist_bins=hist_bins,
+#                         orient=orient, pix_per_cell=pix_per_cell,
+#                         cell_per_block=cell_per_block,
+#                         hog_channel=hog_channel, spatial_feat=True,
+#                         hist_feat=True, hog_feat=True)
+#
+# window_img = draw_boxes(draw_image, hot_windows, color=(0, 0, 255), thick=6)
+#
+# plt.imshow(window_img)
+# plt.show()
 
 
 ########################### Hog Sub-sampling Window Search ###################################
@@ -573,7 +573,8 @@ def process_frame(frame):
 
     # Find final boxes from heatmap using label function
     labels = label(heatmap)
-    draw_img = draw_labeled_bboxes(np.copy(frame), labels)
+    draw_img = draw_labeled_bboxes(np.copy(image2), labels)
+
     return draw_img
 
 
@@ -588,20 +589,20 @@ def process_frame(frame):
 # fig.tight_layout()
 # plt.show()
 
-# ############ Read the video #################################
-#
-# output_video = '../test_videos_output/output_video.mp4'
-# project_video = '../test_video.mp4'
-# #clip1 = VideoFileClip(project_video).subclip(0,3)
-# #clip1 = VideoFileClip(project_video).subclip(38, 42)
-# clip1 = VideoFileClip(project_video)
-# #print("###################Now running processing frame - video#######")
-# processed_clip1 = clip1.fl_image(process_frame) #NOTE: this function expects color images!!
-# processed_clip1.write_videofile(output_video, audio=False)
-#
-# # result_process_frame = process_frame(road_image)
-# # cv2.imshow("Result processed frame", result_process_frame)
-# # cv2.waitKey()
+############ Read the video #################################
+
+output_video = '../test_videos_output/output_video.mp4'
+project_video = '../project_video.mp4'
+clip1 = VideoFileClip(project_video).subclip(0,3)
+#clip1 = VideoFileClip(project_video).subclip(38, 42)
+clip1 = VideoFileClip(project_video)
+#print("###################Now running processing frame - video#######")
+processed_clip1 = clip1.fl_image(process_frame) #NOTE: this function expects color images!!
+processed_clip1.write_videofile(output_video, audio=False)
+
+# result_process_frame = process_frame(road_image)
+# cv2.imshow("Result processed frame", result_process_frame)
+# cv2.waitKey()
 
 
 
