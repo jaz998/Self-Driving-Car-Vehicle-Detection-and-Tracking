@@ -63,7 +63,7 @@ I trained a linear SVM in my code using color classifer from line 130 through 20
 
 The sliding window function was implemented in code line 137 to line 176, and line 516 to line 529. 
 
-I decided to search random window positions using a window size of 96 by 96, and xy overlapping of 0.5 and 0.5. 
+I decided to search random window positions using a window size of 96 by 96, and xy overlapping of 0.5 and 0.5, and y start and stop positions as 350 and 720 respectively (lower half of the camera image where the majority of the images are roads and cars and not the skys and trees).  
 
 ![](images/sliding_windows.png)
 
