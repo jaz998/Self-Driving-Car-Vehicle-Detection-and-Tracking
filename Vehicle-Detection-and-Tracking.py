@@ -509,6 +509,7 @@ print(round(t2-t, 5), 'Seconds to predict', n_predict,'labels with SVC')
 image2 = mpimg.imread('../test_images/test1.jpg') # Mac OS path
 #image2 = mpimg.imread('..\\test_images\\test1.jpg') # Windows Path
 draw_image = np.copy(image2)
+image3 = np.copy(image2)
 
 
 
@@ -525,8 +526,9 @@ hot_windows = search_windows(image2, windows, svc, X_scaler, color_space=colorsp
 
 window_img = draw_boxes(draw_image, hot_windows, color=(0, 0, 255), thick=6)
 
-plt.imshow(window_img)
-plt.show()
+# print('Showing sliding windows image')
+# plt.imshow(window_img)
+# plt.show()
 
 
 ########################### Hog Sub-sampling Window Search ###################################
@@ -537,8 +539,9 @@ ystop = 656
 scale = 1.5
 
 out_img, coordinates_list = find_cars(image2, ystart, ystop, scale, svc, X_scaler, orient, pix_per_cell, cell_per_block, spatial, histbin)
-plt.imshow(out_img)
-plt.show()
+# print('Hog Sub-sampling Window Search image')
+# plt.imshow(out_img)
+# plt.show()
 
 heat = np.zeros_like(image2[:,:,0]).astype(np.float)
 
@@ -555,8 +558,18 @@ heatmap = np.clip(heat, 0, 255)
 labels = label(heatmap)
 draw_img = draw_labeled_bboxes(np.copy(image2), labels)
 
+# fig = plt.figure()
+# plt.subplot(121)
+# plt.imshow(draw_img)
+# plt.title('Car Positions')
+# plt.subplot(122)
+# plt.imshow(heatmap, cmap='hot')
+# plt.title('Heat Map')
+# fig.tight_layout()
+# plt.show()
 
 def process_frame(frame):
+    scale = 2
     out_img, coordinates_list = find_cars(frame, ystart, ystop, scale, svc, X_scaler, orient, pix_per_cell,
                                           cell_per_block, spatial, histbin)
 
@@ -576,17 +589,9 @@ def process_frame(frame):
     draw_img = draw_labeled_bboxes(np.copy(frame), labels)
     return draw_img
 
-
-
-# fig = plt.figure()
-# plt.subplot(121)
-# plt.imshow(draw_img)
-# plt.title('Car Positions')
-# plt.subplot(122)
-# plt.imshow(heatmap, cmap='hot')
-# plt.title('Heat Map')
-# fig.tight_layout()
-# plt.show()
+processed_image = process_frame(image3)
+plt.imshow(processed_image)
+plt.show()
 
 # ############ Read the video #################################
 #
