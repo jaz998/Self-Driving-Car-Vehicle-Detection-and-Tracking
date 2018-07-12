@@ -61,11 +61,11 @@ I trained a linear SVM in my code using color classifer from line 130 through 20
 
 #### 1. Describe how (and identify where in your code) you implemented a sliding window search.  How did you decide what scales to search and how much to overlap windows?
 
-The sliding window function was implemented in code line 137 to line 176, and line 516 to line 529. 
+The Hog Sub-sampling Window Search function (find_cars function) was implemented in code line 61 through 131. 
 
-I decided to search random window positions using a window size of 96 by 96, and xy overlapping of 0.5 and 0.5, and y start and stop positions as 350 and 720 respectively (lower half of the camera image where the majority of the images are roads and cars and not the skys and trees).  
+I decided to use y start and stop positions as 400 and 656 respectively (most of lower half of the camera image where the majority of the images are roads and cars and not the skys and trees). I also uses a scale of 1.5.  
 
-![](images/sliding_windows.png)
+![](images/sub_sample_windows_search.png)
 
 #### 2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
 
