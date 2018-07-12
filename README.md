@@ -63,11 +63,13 @@ I trained a linear SVM in my code using color classifer from line 130 through 20
 
 The Hog Sub-sampling Window Search function (find_cars function) was implemented in code line 61 through 131. 
 
-I decided to use y start and stop positions as 400 and 656 respectively (most of lower half of the camera image where the majority of the images are roads and cars and not the skys and trees). I also uses a scale of 1.5.  
+The below was the first attempt to use the find_cars function with the classifier trained on 5,000 of car images and 5,000 non_car images. I used y start and stop positions as 400 and 656 respectively (most of lower half of the camera image where the majority of the images are roads and cars and not the skys and trees). I also uses a scale of 1.5.  The results appear to be reaonable good and there are multiple hits for a car. 
 
 ![](images/sub_sample_windows_search.png)
 
 #### 2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
+
+The pipeline uses the find_cars function first and then use heat map to remove false positives. 
 
 Ultimately I searched on two scales using YCrCb 3-channel HOG features plus spatially binned color and histograms of color in the feature vector, which provided a nice result.  Here are some example images:
 
