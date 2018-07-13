@@ -73,7 +73,10 @@ The pipeline uses the find_cars function first and then use heat map to remove f
 
 Ultimately I searched on two scales using YCrCb 3-channel HOG features plus spatially binned color and histograms of color in the feature vector, which provided a nice result.  Here are some example images:
 
-![alt text][image4]
+![](images/pro_img1.png)
+![](images/pro_img4.png)
+![](images/pro_img6.png)
+
 ---
 
 ### Video Implementation
