@@ -506,25 +506,28 @@ print(round(t2-t, 5), 'Seconds to predict', n_predict,'labels with SVC')
 
 #print('hog notcar features', hog_notcar_features[0].shape)
 # print('not car feature len', len(notcar_features.shape()))
-image2 = mpimg.imread('../test_images/test1.jpg') # Mac OS path
+image2 = mpimg.imread('../test_images/test2.jpg') # Mac OS path
+image3 = mpimg.imread('../test_images/test3.jpg')
+image4 = mpimg.imread('../test_images/test4.jpg')
+image5 = mpimg.imread('../test_images/test5.jpg')
+image6 = mpimg.imread('../test_images/test6.jpg')
 #image2 = mpimg.imread('..\\test_images\\test1.jpg') # Windows Path
 draw_image = np.copy(image2)
-image3 = np.copy(image2)
 
 
 
 
-windows = slide_window(image2, x_start_stop=[None, None], y_start_stop=[350, 720],
-                    xy_window=(96, 96), xy_overlap=(0.5, 0.5))
-
-hot_windows = search_windows(image2, windows, svc, X_scaler, color_space=colorspace,
-                        spatial_size= spatial, hist_bins=histbin,
-                        orient=orient, pix_per_cell=pix_per_cell,
-                        cell_per_block=cell_per_block,
-                        hog_channel=hog_channel, spatial_feat=True,
-                        hist_feat=True, hog_feat=True)
-
-window_img = draw_boxes(draw_image, hot_windows, color=(0, 0, 255), thick=6)
+# windows = slide_window(image2, x_start_stop=[None, None], y_start_stop=[350, 720],
+#                     xy_window=(96, 96), xy_overlap=(0.5, 0.5))
+#
+# hot_windows = search_windows(image2, windows, svc, X_scaler, color_space=colorspace,
+#                         spatial_size= spatial, hist_bins=histbin,
+#                         orient=orient, pix_per_cell=pix_per_cell,
+#                         cell_per_block=cell_per_block,
+#                         hog_channel=hog_channel, spatial_feat=True,
+#                         hist_feat=True, hog_feat=True)
+#
+# window_img = draw_boxes(draw_image, hot_windows, color=(0, 0, 255), thick=6)
 
 # print('Showing sliding windows image')
 # plt.imshow(window_img)
@@ -534,29 +537,28 @@ window_img = draw_boxes(draw_image, hot_windows, color=(0, 0, 255), thick=6)
 ########################### Hog Sub-sampling Window Search ###################################
 
 # Defining variable values
-ystart = 400
-ystop = 656
-scale = 1.5
 
-out_img, coordinates_list = find_cars(image2, ystart, ystop, scale, svc, X_scaler, orient, pix_per_cell, cell_per_block, spatial, histbin)
-# print('Hog Sub-sampling Window Search image')
-# plt.imshow(out_img)
-# plt.show()
+# scale = 1.5
 
-heat = np.zeros_like(image2[:,:,0]).astype(np.float)
-
-# Add heat to each box in box list
-heat = add_heat(heat, coordinates_list)
-
-# Apply threshold to help remove false positives
-heat = apply_threshold(heat, 1)
-
-# Visualize the heatmap when displaying
-heatmap = np.clip(heat, 0, 255)
-
-# Find final boxes from heatmap using label function
-labels = label(heatmap)
-draw_img = draw_labeled_bboxes(np.copy(image2), labels)
+# out_img, coordinates_list = find_cars(image2, ystart, ystop, scale, svc, X_scaler, orient, pix_per_cell, cell_per_block, spatial, histbin)
+# # print('Hog Sub-sampling Window Search image')
+# # plt.imshow(out_img)
+# # plt.show()
+#
+# heat = np.zeros_like(image2[:,:,0]).astype(np.float)
+#
+# # Add heat to each box in box list
+# heat = add_heat(heat, coordinates_list)
+#
+# # Apply threshold to help remove false positives
+# heat = apply_threshold(heat, 1)
+#
+# # Visualize the heatmap when displaying
+# heatmap = np.clip(heat, 0, 255)
+#
+# # Find final boxes from heatmap using label function
+# labels = label(heatmap)
+# draw_img = draw_labeled_bboxes(np.copy(image2), labels)
 
 # fig = plt.figure()
 # plt.subplot(121)
@@ -569,6 +571,9 @@ draw_img = draw_labeled_bboxes(np.copy(image2), labels)
 # plt.show()
 
 def process_frame(frame):
+    # ystart = 400
+    ystart = 350
+    ystop = 656
     scale = 2
     out_img, coordinates_list = find_cars(frame, ystart, ystop, scale, svc, X_scaler, orient, pix_per_cell,
                                           cell_per_block, spatial, histbin)
@@ -589,9 +594,31 @@ def process_frame(frame):
     draw_img = draw_labeled_bboxes(np.copy(frame), labels)
     return draw_img
 
-processed_image = process_frame(image3)
-plt.imshow(processed_image)
+processed_image2 = process_frame(image2)
+print('showing processed image 2')
+plt.imshow(processed_image2)
 plt.show()
+
+processed_image3 = process_frame(image3)
+print('showing processed image 3')
+plt.imshow(processed_image3)
+plt.show()
+
+processed_image4 = process_frame(image4)
+print('showing processed image 4')
+plt.imshow(processed_image4)
+plt.show()
+
+processed_image5 = process_frame(image5)
+print('showing processed image 5')
+plt.imshow(processed_image5)
+plt.show()
+
+processed_image6 = process_frame(image6)
+print('showing processed image 6')
+plt.imshow(processed_image6)
+plt.show()
+
 
 # ############ Read the video #################################
 #
