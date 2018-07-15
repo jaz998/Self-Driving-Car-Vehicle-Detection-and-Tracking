@@ -67,13 +67,66 @@ The below was the first attempt to use the find_cars function with the classifie
 
 ![](images/sub_sample_windows_search.png)
 
-#### 2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
+#### 3. Determing Classifier parameters. 
+
+I determined the Classifier parameters by running combinations of different parameters values and compared the result using a table like the below. The below table shows the more relevant results. 
+
+To test the performance of the classifier using different parameters value, I use a sample size of 1,000 car image and 1,000 non-car images. The prediction test sample is 100 images.
+
+Shorthand used in the table are:
+Config: configurations
+Cspace: Colorspace
+Ori: Orient
+Pix/Cell: Pixels per Cell
+
+
+| Config| Cspace | Ori | Pix/Cell | Cells/Block | HOG Channel|spatial|histbin| Accuracy |Prediction Time|Training Time|
+| :----: | :-------: | :-: | :------: | :---------: | :--------: | -----:|:----:| :-------:|:----------:|:-----------:|
+| 1      | RGB        | 9  | 8       | 2            | ALL        |(32,32)|32     | 96.75%   | 0.00501       |1.14
+| 1      | RGB        | 10  | 8       | 2            | ALL        |(32,32)|32     |  98.5%     |0.004        |1.24|
+| 1      | RGB        | 11  | 8       | 2            | ALL        |(32,32)|32     |97.25%      |0.005        |1.36
+| 1      | RGB        | 11  | 16       | 2            | ALL        |(32,32)|32     | 98.75%      |0.00399        |1.48
+| 1      | YCrCb       | 11  | 16       | 2            | ALL        |(32,32)|32     | 99.5%     |0.00401        |0.45
+| 1      | YCrCb        | 10  | 16       | 2            | ALL        |(32,32)|32     | 99.75%     |0.00298        |0.39
+| 1      | YCrCb        | 9  | 16       | 2            | ALL        |(32,32)|32     |   99.5%      |   0.003     |0.48
+| 1      | YCrCb        | 10  | 8       | 2            | ALL        |(32,32)|32     |         |        |
+| 1      | YCrCb        | 9  | 8       | 2            | ALL        |(32,32)|32     |         |        |
+| 1      | YCrCb        | 9  | 8       | 2            | ALL        |(32,32)|32     |         |        |
+| 1      | RGB        | 9  | 8       | 2            | ALL        |(32,32)|32     |         |        |
+
+
+
+
+#### 3. Multi-Windows Search - Determining optimal y ranges and scales
+
+In different y ranges of the images, cars at different distances and positions relative to the camera tends to appear in different sizes/scales. Different y ranges and scales combinations are run manually on test images to determine the optimal combinations of y values and scale value for cars at particular distances and positions.
+
+For images like the below, I found that the the optimal combinations are 500 to 400 of y pixel positions and scale of 1.5. The below image shows the y ranges search with such a scale.  
+
+![](images/para_1.png)
+
+For images like the below, I found that the the optimal combinations are 400 to 480 of y pixel positions and scale of 1. The below image shows the y ranges search with such a scale.  
+
+![](images/para_2.png)
+
+For performance reasons, I also use a few large scale windows search for the lowre half of the camera image with y values of 400 to 500 with a scale of 3. The below image shows the y ranges search with such a scale.  
+
+![](images/para_3.png)
+
+I then combine these y values and scale values in the pipeline. I also move the y values by a certain number for each of the three value combination above to capture cars in somewhat different positions, while keeping the scale values the same. See code line 619 through to line 678 for the implementations. 
+
+
+
+#### 3. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
 
 The pipeline uses the find_cars function first and then use heat map to remove false positives. 
 
 Ultimately I searched on two scales using YCrCb 3-channel HOG features plus spatially binned color and histograms of color in the feature vector, which provided a nice result.  Here are some example images:
 
-![alt text][image4]
+![](images/pro_img1.png)
+![](images/pro_img4.png)
+![](images/pro_img6.png)
+
 ---
 
 ### Video Implementation
@@ -84,7 +137,7 @@ Here's a [link to my video result](./project_video.mp4)
 
 #### 2. Describe how (and identify where in your code) you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.
 
-I recorded the positions of positive detections in each frame of the video.  From the positive detections I created a heatmap and then thresholded that map to identify vehicle positions.  I then used `scipy.ndimage.measurements.label()` to identify individual blobs in the heatmap.  I then assumed each blob corresponded to a vehicle.  I constructed bounding boxes to cover the area of each blob detected.  
+I recorded the positions of positive detections in each frame of the video.  From the positive detections I created a heatmap and then thresholded that map to identify vehicle positions.  I then used `scipy.ndimage.measurements.label()` to identify individual blobs in the heatmap.  I then assumed each blob corresponded to a vehicle.  I constructed bounding boxes to cover the area of each blob detected. See code line 715 to 729 for the implementations.   
 
 Here's an example result showing the heatmap from a series of frames of video, the result of `scipy.ndimage.measurements.label()` and the bounding boxes then overlaid on the last frame of video:
 
