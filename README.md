@@ -67,7 +67,30 @@ The below was the first attempt to use the find_cars function with the classifie
 
 ![](images/sub_sample_windows_search.png)
 
-#### 2. Determining optimal y ranges and scales
+#### 3. Determing Classifier parameters. 
+
+I determined the Classifier parameters by running combinations of different parameters values and compared the result using a table like the below. The below table shows the more relevant results. 
+
+| Configurations   | Colorspace | Orientations | Pixels Per Cell | Cells Per Block | HOG Channel | Accuracy     |Prediction Time|
+| :--------------: | :--------: | :----------: | :-------------: | :-------------: | :---------: | ------------:|  ------------:|
+| 1          | RGB        | 9            | 8               | 2               | ALL         |              |         |
+| 2          | HSV        | 9            | 8               | 2               | 0           |              |
+| 3          | HSV        | 9            | 8               | 2               | 1           |              |
+| 4          | LUV        | 9            | 8               | 2               | 2           |              |
+| 5          | LUV        | 9            | 8               | 2               | ALL         |              |
+| 6          | HLS        | 9            | 8               | 2               | 0           |              |
+| 7          | HLS        | 9            | 8               | 2               | 1           |              |
+| 8          | YUV        | 9            | 8               | 2               | 2           |              |
+| 9           | YCrCb      | 9            | 8               | 2               | 1           |              |
+| 10                  | YCrCb      | 9            | 8               | 2               | 2           |              |
+| 11                  | HSV        | 9            | 8               | 2               | ALL         |              |
+| 12                  | LUV        | 9            | 8               | 2               | ALL         |              |
+| 13                  | HLS        | 9            | 8               | 2               | ALL         |         |
+| 14                  | YUV        | 9            | 8               | 2               | ALL         |         |
+| 15                  | YCrCb      | 9            | 8               | 2               | ALL         |         |
+
+
+#### 3. Multi-Windows Search - Determining optimal y ranges and scales
 
 In different y ranges of the images, cars at different distances and positions relative to the camera tends to appear in different sizes/scales. Different y ranges and scales combinations are run manually on test images to determine the optimal combinations of y values and scale value for cars at particular distances and positions.
 
