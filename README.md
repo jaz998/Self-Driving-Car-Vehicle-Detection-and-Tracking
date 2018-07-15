@@ -71,17 +71,22 @@ The below was the first attempt to use the find_cars function with the classifie
 
 I determined the Classifier parameters by running combinations of different parameters values and compared the result using a table like the below. The below table shows the more relevant results. 
 
-To test the performance of the classifier using different parameters value, I use a sample size of 1,000 car image and 1,000 non-car images. 
+To test the performance of the classifier using different parameters value, I use a sample size of 1,000 car image and 1,000 non-car images. The prediction test sample is 100 images.
 
+Shorthand used in the table are:
+Config: configurations
+Cspace: Colorspace
+Ori: Orient
+Pix/Cell: Pixels per Cell
 
 
 | Config| Cspace | Ori | Pix/Cell | Cells/Block | HOG Channel|spatial|histbin| Accuracy |Prediction Time|Training Time|
 | :----: | :-------: | :-: | :------: | :---------: | :--------: | -----:|:----:| :-------:|:----------:|:-----------:|
 | 1      | RGB        | 9  | 8       | 2            | ALL        |(32,32)|32     | 96.75%   | 0.00501       |1.14
-| 1      | RGB        | 9  | 8       | 2            | ALL        |(32,32)|32     |         |        |
-| 1      | RGB        | 9  | 8       | 2            | ALL        |(32,32)|32     |         |        |
-| 1      | RGB        | 9  | 8       | 2            | ALL        |(32,32)|32     |         |        |
-| 1      | RGB        | 9  | 8       | 2            | ALL        |(32,32)|32     |         |        |
+| 1      | RGB        | 10  | 8       | 2            | ALL        |(32,32)|32     |  98.5%     |0.004        |1.24|
+| 1      | RGB        | 11  | 8       | 2            | ALL        |(32,32)|32     |97.25%      |0.005        |1.36
+| 1      | RGB        | 9  | 16       | 2            | ALL        |(32,32)|32     | 98.75%      |0.00399        |1.48
+| 1      | YCrCb        | 9  | 8       | 2            | ALL        |(32,32)|32     |         |        |
 | 1      | RGB        | 9  | 8       | 2            | ALL        |(32,32)|32     |         |        |
 
 
@@ -127,7 +132,7 @@ Here's a [link to my video result](./project_video.mp4)
 
 #### 2. Describe how (and identify where in your code) you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.
 
-I recorded the positions of positive detections in each frame of the video.  From the positive detections I created a heatmap and then thresholded that map to identify vehicle positions.  I then used `scipy.ndimage.measurements.label()` to identify individual blobs in the heatmap.  I then assumed each blob corresponded to a vehicle.  I constructed bounding boxes to cover the area of each blob detected.  
+I recorded the positions of positive detections in each frame of the video.  From the positive detections I created a heatmap and then thresholded that map to identify vehicle positions.  I then used `scipy.ndimage.measurements.label()` to identify individual blobs in the heatmap.  I then assumed each blob corresponded to a vehicle.  I constructed bounding boxes to cover the area of each blob detected. See code line 715 to 729 for the implementations.   
 
 Here's an example result showing the heatmap from a series of frames of video, the result of `scipy.ndimage.measurements.label()` and the bounding boxes then overlaid on the last frame of video:
 
