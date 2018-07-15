@@ -75,7 +75,7 @@ To test the performance of the classifier using different parameters value, I us
 
 
 
-| Config| Colorspace | Ori | Pix/Cell | Cells/Block | HOG Channel|spatial|histbin| Accuracy |Prediction Time|Training Time|
+| Config| Cspace | Ori | Pix/Cell | Cells/Block | HOG Channel|spatial|histbin| Accuracy |Prediction Time|Training Time|
 | :----: | :-------: | :-: | :------: | :---------: | :--------: | -----:|:-----:| :-------:|:-------------:|:-----------:|
 | 1      | RGB        | 9  | 8       | 2            | ALL        |(32,32)|32     | 96.75%   | 0.00501       |1.14
 | 1      | RGB        | 9  | 8       | 2            | ALL        |(32,32)|32     |         |        |
