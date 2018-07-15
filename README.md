@@ -73,21 +73,21 @@ I determined the Classifier parameters by running combinations of different para
 
 | Configurations   | Colorspace | Orientations | Pixels Per Cell | Cells Per Block | HOG Channel | Accuracy     |Prediction Time|
 | :--------------: | :--------: | :----------: | :-------------: | :-------------: | :---------: | ------------:|  ------------:|
-| 1          | RGB        | 9            | 8               | 2               | ALL         |              |         |
-| 2          | HSV        | 9            | 8               | 2               | 0           |              |
-| 3          | HSV        | 9            | 8               | 2               | 1           |              |
-| 4          | LUV        | 9            | 8               | 2               | 2           |              |
-| 5          | LUV        | 9            | 8               | 2               | ALL         |              |
-| 6          | HLS        | 9            | 8               | 2               | 0           |              |
-| 7          | HLS        | 9            | 8               | 2               | 1           |              |
-| 8          | YUV        | 9            | 8               | 2               | 2           |              |
-| 9           | YCrCb      | 9            | 8               | 2               | 1           |              |
-| 10                  | YCrCb      | 9            | 8               | 2               | 2           |              |
-| 11                  | HSV        | 9            | 8               | 2               | ALL         |              |
-| 12                  | LUV        | 9            | 8               | 2               | ALL         |              |
-| 13                  | HLS        | 9            | 8               | 2               | ALL         |         |
-| 14                  | YUV        | 9            | 8               | 2               | ALL         |         |
-| 15                  | YCrCb      | 9            | 8               | 2               | ALL         |         |
+| 1                | RGB        | 9            | 8               | 2               | ALL         |              |         |
+| 2                | HSV        | 9            | 8               | 2               | 0           |              |
+| 3                | HSV        | 9            | 8               | 2               | 1           |              |
+| 4                | LUV        | 9            | 8               | 2               | 2           |              |
+| 5                | LUV        | 9            | 8               | 2               | ALL         |              |
+| 6                | HLS        | 9            | 8               | 2               | 0           |              |
+| 7                | HLS        | 9            | 8               | 2               | 1           |              |
+| 8                | YUV        | 9            | 8               | 2               | 2           |              |
+| 9                | YUV        | 9            | 8               | 2               | 1           |              |
+| 10               | HSV          | 9            | 8               | 2               | 2           |              |
+| 11               | HSV        | 9            | 8               | 2               | ALL         |              |
+| 12               | YCrCb        | 9            | 8               | 2               | ALL         |              |
+| 13               | YCrCb      | 9            | 8               | 2               | ALL         |         |
+| 14               | YCrCb      | 10           | 8               | 2               | ALL         |         |
+| 15               | YCrCb      | 10           | 16              | 2               | ALL         |         |
 
 
 #### 3. Multi-Windows Search - Determining optimal y ranges and scales
