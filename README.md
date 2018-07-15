@@ -69,14 +69,21 @@ The below was the first attempt to use the find_cars function with the classifie
 
 #### 2. Determining optimal y ranges and scales
 
-In different y ranges of the images, car tends to appear in different sizes/scales. Different y ranges and scales combinations are run on test images to determine the optimal combinations.
+In different y ranges of the images, cars at different distances and positions relative to the camera tends to appear in different sizes/scales. Different y ranges and scales combinations are run manually on test images to determine the optimal combinations of y values and scale value for cars at particular distances and positions.
 
-For the middle or the image (500 to 400 of y pixel positions), the optimal scale is 1.5. The below image shows the y ranges search with such a scale. 
+For images like the below, I found that the the optimal combinations are 500 to 400 of y pixel positions and scale of 1.5. The below image shows the y ranges search with such a scale.  
 
 ![](images/para_1.png)
 
+For images like the below, I found that the the optimal combinations are 400 to 480 of y pixel positions and scale of 1. The below image shows the y ranges search with such a scale.  
 
+![](images/para_2.png)
 
+For cars in distance in the middle of the image like the below, I found that the the optimal combinations are 400 to 420 of y pixel positions and scale of 0.3. The below image shows the y ranges search with such a scale.  
+
+![](images/para_3.png)
+
+I then combine these y values and scale values in the pipeline. I also move the y values by 30 pixels each time to capture cars in somewhat different positions. 
 
 
 
