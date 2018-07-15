@@ -67,7 +67,20 @@ The below was the first attempt to use the find_cars function with the classifie
 
 ![](images/sub_sample_windows_search.png)
 
-#### 2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
+#### 2. Determining optimal y ranges and scales
+
+In different y ranges of the images, car tends to appear in different sizes/scales. Different y ranges and scales combinations are run on test images to determine the optimal combinations.
+
+For the middle or the image (500 to 400 of y pixel positions), the optimal scale is 1.5. The below image shows the y ranges search with such a scale. 
+
+![](images/para_1.png)
+
+
+
+
+
+
+#### 3. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
 
 The pipeline uses the find_cars function first and then use heat map to remove false positives. 
 
