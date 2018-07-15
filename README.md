@@ -71,7 +71,7 @@ The below was the first attempt to use the find_cars function with the classifie
 
 I determined the Classifier parameters by running combinations of different parameters values and compared the result using a table like the below. The below table shows the more relevant results. 
 
-To test the performance of the classifier using different parameters value, I use a sample size of 1,000 car image and 1,000 non-car images. The prediction test sample is 100 images.
+To test the performance of the classifier using different parameters value, I use a sample size of 1,000 car image and 1,000 non-car images. The prediction test sample is 100 images. All times are in seconds. 
 
 Shorthand used in the table are:
 Config: configurations
@@ -80,21 +80,23 @@ Ori: Orient
 Pix/Cell: Pixels per Cell
 
 
+
+
 | Config| Cspace | Ori | Pix/Cell | Cells/Block | HOG Channel|spatial|histbin| Accuracy |Prediction Time|Training Time|
 | :----: | :-------: | :-: | :------: | :---------: | :--------: | -----:|:----:| :-------:|:----------:|:-----------:|
 | 1      | RGB        | 9  | 8       | 2            | ALL        |(32,32)|32     | 96.75%   | 0.00501       |1.14
-| 1      | RGB        | 10  | 8       | 2            | ALL        |(32,32)|32     |  98.5%     |0.004        |1.24|
-| 1      | RGB        | 11  | 8       | 2            | ALL        |(32,32)|32     |97.25%      |0.005        |1.36
-| 1      | RGB        | 11  | 16       | 2            | ALL        |(32,32)|32     | 98.75%      |0.00399        |1.48
-| 1      | YCrCb       | 11  | 16       | 2            | ALL        |(32,32)|32     | 99.5%     |0.00401        |0.45
-| 1      | YCrCb        | 10  | 16       | 2            | ALL        |(32,32)|32     | 99.75%     |0.00298        |0.39
-| 1      | YCrCb        | 9  | 16       | 2            | ALL        |(32,32)|32     |   99.5%      |   0.003     |0.48
-| 1      | YCrCb        | 10  | 8       | 2            | ALL        |(32,32)|32     |         |        |
-| 1      | YCrCb        | 9  | 8       | 2            | ALL        |(32,32)|32     |         |        |
-| 1      | YCrCb        | 9  | 8       | 2            | ALL        |(32,32)|32     |         |        |
-| 1      | RGB        | 9  | 8       | 2            | ALL        |(32,32)|32     |         |        |
+| 2      | RGB        | 10  | 8       | 2            | ALL        |(32,32)|32     |  98.5%     |0.004        |1.24|
+| 3      | RGB        | 11  | 8       | 2            | ALL        |(32,32)|32     |97.25%      |0.005        |1.36
+| 4      | RGB        | 11  | 16       | 2            | ALL        |(32,32)|32     | 98.75%      |0.00399        |1.48
+| 5      | YCrCb       | 11  | 16       | 2            | ALL        |(32,32)|32     | 99.5%     |0.00401        |0.45
+| 6      | YCrCb        | 10  | 16       | 2            | ALL        |(32,32)|32     | 99.75%     |0.00298        |0.39
+| 7      | YCrCb        | 9  | 16       | 2            | ALL        |(32,32)|32     |   99.5%      |   0.003     |0.48
+| 8      | YCrCb        | 10  | 16       | 2            | ALL        |(16,16)|32     |100%         |0.01227        |0.26
+| 9      | YCrCb        | 10  | 16       | 2            | ALL        |(16,16)|16     |100%         |0.00977        |0.18
+| 10      | YUV        | 10  | 16       | 2            | ALL        |(32,32)|32     |   100%      |  0.01554      |0.64
+| 11      | YUV        | 11  | 16       | 2            | ALL        |(32,32)|32     |100%         |0.02249        |0.66
 
-
+I chose configuration 9 as my final configurations - based on considerations of accuracy, prediction time and training time. 
 
 
 #### 3. Multi-Windows Search - Determining optimal y ranges and scales
@@ -143,13 +145,13 @@ Here's an example result showing the heatmap from a series of frames of video, t
 
 ### Here are six frames and their corresponding heatmaps:
 
-![alt text][image5]
+![](images/.png)
 
 ### Here is the output of `scipy.ndimage.measurements.label()` on the integrated heatmap from all six frames:
-![alt text][image6]
+![](images/.png)
 
 ### Here the resulting bounding boxes are drawn onto the last frame in the series:
-![alt text][image7]
+![](images/.png)
 
 
 
