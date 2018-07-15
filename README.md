@@ -79,11 +79,11 @@ For images like the below, I found that the the optimal combinations are 400 to 
 
 ![](images/para_2.png)
 
-For cars in distance in the middle of the image like the below, I found that the the optimal combinations are 400 to 420 of y pixel positions and scale of 0.3. The below image shows the y ranges search with such a scale.  
+For performance reasons, I also use a few large scale windows search for the lowre half of the camera image with y values of 400 to 500 with a scale of 3. The below image shows the y ranges search with such a scale.  
 
 ![](images/para_3.png)
 
-I then combine these y values and scale values in the pipeline. I also move the y values by 30 pixels each time to capture cars in somewhat different positions. 
+I then combine these y values and scale values in the pipeline. I also move the y values by a certain number for each of the three value combination above to capture cars in somewhat different positions, while keeping the scale values the same. See code line 619 through to line 678 for the implementations. 
 
 
 
