@@ -71,23 +71,20 @@ The below was the first attempt to use the find_cars function with the classifie
 
 I determined the Classifier parameters by running combinations of different parameters values and compared the result using a table like the below. The below table shows the more relevant results. 
 
-| Configurations   | Colorspace | Orientations | Pixels Per Cell | Cells Per Block | HOG Channel | Accuracy     |Prediction Time|
-| :--------------: | :--------: | :----------: | :-------------: | :-------------: | :---------: | ------------:|  ------------:|
-| 1                | RGB        | 9            | 8               | 2               | ALL         |              |         |
-| 2                | HSV        | 9            | 8               | 2               | 0           |              |
-| 3                | HSV        | 9            | 8               | 2               | 1           |              |
-| 4                | LUV        | 9            | 8               | 2               | 2           |              |
-| 5                | LUV        | 9            | 8               | 2               | ALL         |              |
-| 6                | HLS        | 9            | 8               | 2               | 0           |              |
-| 7                | HLS        | 9            | 8               | 2               | 1           |              |
-| 8                | YUV        | 9            | 8               | 2               | 2           |              |
-| 9                | YUV        | 9            | 8               | 2               | 1           |              |
-| 10               | HSV          | 9            | 8               | 2               | 2           |              |
-| 11               | HSV        | 9            | 8               | 2               | ALL         |              |
-| 12               | YCrCb        | 9            | 8               | 2               | ALL         |              |
-| 13               | YCrCb      | 9            | 8               | 2               | ALL         |         |
-| 14               | YCrCb      | 10           | 8               | 2               | ALL         |         |
-| 15               | YCrCb      | 10           | 16              | 2               | ALL         |         |
+To test the performance of the classifier using different parameters value, I use a sample size of 1,000 car image and 1,000 non-car images. 
+
+
+
+| Config| Colorspace | Ori | Pix/Cell | Cells/Block | HOG Channel|spatial|histbin| Accuracy |Prediction Time|Training Time|
+| :----: | :-------: | :-: | :------: | :---------: | :--------: | -----:|:-----:| :-------:|:-------------:|:-----------:|
+| 1      | RGB        | 9  | 8       | 2            | ALL        |(32,32)|32     | 96.75%   | 0.00501       |1.14
+| 1      | RGB        | 9  | 8       | 2            | ALL        |(32,32)|32     |         |        |
+| 1      | RGB        | 9  | 8       | 2            | ALL        |(32,32)|32     |         |        |
+| 1      | RGB        | 9  | 8       | 2            | ALL        |(32,32)|32     |         |        |
+| 1      | RGB        | 9  | 8       | 2            | ALL        |(32,32)|32     |         |        |
+| 1      | RGB        | 9  | 8       | 2            | ALL        |(32,32)|32     |         |        |
+
+
 
 
 #### 3. Multi-Windows Search - Determining optimal y ranges and scales
