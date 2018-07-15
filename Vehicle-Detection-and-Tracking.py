@@ -18,6 +18,7 @@ def add_heat(heatmap, bbox_list):
     for box in bbox_list:
         # Add += 1 for all pixels inside each bbox
         # Assuming each "box" takes the form ((x1, y1), (x2, y2))
+        print('heatmap ', heatmap)
         heatmap[box[0][1]:box[1][1], box[0][0]:box[1][0]] += 1
 
     # Return updated heatmap
@@ -59,7 +60,7 @@ def convert_color(img, conv='RGB2YCrCb'):
 
 
 # Define a single function that can extract features using hog sub-sampling and make predictions
-def find_cars(img, ystart, ystop, scale, svc, X_scaler, orient, pix_per_cell, cell_per_block, spatial_size, hist_bins):
+def find_cars(img, ystart, ystop, scale, svc, X_scaler, orient, pix_per_cell, cell_per_block, spatial_size, hist_bins, show_boxes = False):
     coordinates_list = []
 
     draw_img = np.copy(img)
@@ -68,8 +69,10 @@ def find_cars(img, ystart, ystop, scale, svc, X_scaler, orient, pix_per_cell, ce
     img_tosearch = img[ystart:ystop, :, :]
     ctrans_tosearch = convert_color(img_tosearch, conv='RGB2YCrCb')
     if scale != 1:
+        print('Scale = ', scale)
         imshape = ctrans_tosearch.shape
         ctrans_tosearch = cv2.resize(ctrans_tosearch, (np.int(imshape[1] / scale), np.int(imshape[0] / scale)))
+
 
     ch1 = ctrans_tosearch[:, :, 0]
     ch2 = ctrans_tosearch[:, :, 1]
@@ -91,6 +94,8 @@ def find_cars(img, ystart, ystop, scale, svc, X_scaler, orient, pix_per_cell, ce
     hog1 = get_hog_features(ch1, orient, pix_per_cell, cell_per_block, feature_vec=False)
     hog2 = get_hog_features(ch2, orient, pix_per_cell, cell_per_block, feature_vec=False)
     hog3 = get_hog_features(ch3, orient, pix_per_cell, cell_per_block, feature_vec=False)
+
+
 
     for xb in range(nxsteps):
         for yb in range(nysteps):
@@ -119,7 +124,7 @@ def find_cars(img, ystart, ystop, scale, svc, X_scaler, orient, pix_per_cell, ce
             # test_features = X_scaler.transform(np.hstack((shape_feat, hist_feat)).reshape(1, -1))
             test_prediction = svc.predict(test_features)
 
-            if test_prediction == 1:
+            if test_prediction == 1 or show_boxes:
                 xbox_left = np.int(xleft * scale)
                 ytop_draw = np.int(ytop * scale)
                 win_draw = np.int(window * scale)
@@ -127,6 +132,7 @@ def find_cars(img, ystart, ystop, scale, svc, X_scaler, orient, pix_per_cell, ce
                               (xbox_left + win_draw, ytop_draw + win_draw + ystart), (0, 0, 255), 6)
                 coordinates = ((xbox_left, (ytop_draw + ystart)), ((xbox_left + win_draw), (ytop_draw + win_draw + ystart)))
                 coordinates_list.append(coordinates)
+    #print('Printing the coordinates ', coordinates_list[0])
 
     return draw_img, coordinates_list
 
@@ -417,24 +423,55 @@ for image in images:
 
 
 # Use a smaller sample for testing hog features classifier
-sample_size = 5000
+sample_size = 1000
 hog_cars = cars[0:sample_size]
 hog_notcars = notcars[0:sample_size]
+
+# Full sample
+# hog_cars = cars
+# hog_notcars = notcars
 
 print('Number of car_images', len(hog_cars))
 print('Number of non_car images:', len(hog_notcars))
 
+# print('***********Showing test image**************')
+# test_img = mpimg.imread(hog_cars[0])
+# plt.title('Loading image for classifier')
+# plt.imshow(test_img)
+# plt.show()
+
 
 
 # Defining the parameters for hog features
-colorspace = 'YCrCb'
-orient = 9
-pix_per_cell = 8
+# colorspace = 'YCrCb'
+# orient = 9
+# pix_per_cell = 8
+# cell_per_block = 2
+# hog_channel = 'ALL'
+# # Specifying spatial and histbin parameters
+# spatial = (32, 32)
+# histbin = 32
+
+# Alternative parameters values
+# colorspace = 'YCrCb'
+# orient = 9
+# pix_per_cell = 16
+# cell_per_block = 2
+# hog_channel = 'ALL'
+# # Specifying spatial and histbin parameters
+# spatial = (32, 32)
+# histbin = 32
+
+# Trying Parameter values
+colorspace = 'YUV'
+orient = 11
+pix_per_cell = 16
 cell_per_block = 2
 hog_channel = 'ALL'
 # Specifying spatial and histbin parameters
 spatial = (32, 32)
 histbin = 32
+
 
 
 
@@ -496,7 +533,7 @@ print(round(t2-t, 2), 'Seconds to train SVC...')
 print('Test accuracy of SVC =', round(svc.score(X_test, y_test), 4))
 # Check the prediction of a single sample
 t = time.time()
-n_predict = 10
+n_predict = 1000
 print('My SVC predicts: ', svc.predict(X_test[0:n_predict]))
 print('For these', n_predict, 'labels: ', y_test[0:n_predict])
 t2 = time.time()
@@ -506,13 +543,13 @@ print(round(t2-t, 5), 'Seconds to predict', n_predict,'labels with SVC')
 
 #print('hog notcar features', hog_notcar_features[0].shape)
 # print('not car feature len', len(notcar_features.shape()))
-image2 = mpimg.imread('../test_images/test2.jpg') # Mac OS path
-image3 = mpimg.imread('../test_images/test3.jpg')
-image4 = mpimg.imread('../test_images/test4.jpg')
-image5 = mpimg.imread('../test_images/test5.jpg')
-image6 = mpimg.imread('../test_images/test6.jpg')
+# image2 = mpimg.imread('../test_images/test2.jpg') # Mac OS path
+# image3 = mpimg.imread('../test_images/test3.jpg')
+# image4 = mpimg.imread('../test_images/test4.jpg')
+# image5 = mpimg.imread('../test_images/test5.jpg')
+# image6 = mpimg.imread('../test_images/test6.jpg')
 #image2 = mpimg.imread('..\\test_images\\test1.jpg') # Windows Path
-draw_image = np.copy(image2)
+# draw_image = np.copy(image2)
 
 
 
@@ -571,17 +608,114 @@ draw_image = np.copy(image2)
 # plt.show()
 
 def process_frame(frame):
+    # Defining the parameters for hog features
+    # colorspace = 'YCrCb'
+    # orient = 9
+    # pix_per_cell = 8
+    # cell_per_block = 2
+    # hog_channel = 'ALL'
+    # # Specifying spatial and histbin parameters
+    # spatial = (32, 32)
+    # histbin = 32
+
     # ystart = 400
-    ystart = 350
-    ystop = 656
-    scale = 2
+    # ystart = 350
+    # ystop = 656
+    # scale = 3
+
+    coordinates_list_combo = []
+
+    # Parameters combination 1, Y values 1
+    ystart = 400
+    ystop = 500
+    scale =1.5
+
     out_img, coordinates_list = find_cars(frame, ystart, ystop, scale, svc, X_scaler, orient, pix_per_cell,
                                           cell_per_block, spatial, histbin)
+
+    coordinates_list_combo.append(coordinates_list)
+
+    # Parameters combination 1, Y values 2
+    ystart = 430
+    ystop = 530
+    scale =1.5
+
+    out_img, coordinates_list = find_cars(frame, ystart, ystop, scale, svc, X_scaler, orient, pix_per_cell,
+                                          cell_per_block, spatial, histbin)
+
+    coordinates_list_combo.append(coordinates_list)
+
+    # Parameters combination 1, Y values 3
+    ystart = 450
+    ystop = 650
+    scale =1.5
+
+    out_img, coordinates_list = find_cars(frame, ystart, ystop, scale, svc, X_scaler, orient, pix_per_cell,
+                                          cell_per_block, spatial, histbin)
+
+    coordinates_list_combo.append(coordinates_list)
+
+
+    #Parameters combination 2, Y values 1
+    ystart = 400
+    ystop = 480
+    scale =1
+
+    out_img, coordinates_list = find_cars(frame, ystart, ystop, scale, svc, X_scaler, orient, pix_per_cell,
+                                          cell_per_block, spatial, histbin)
+
+    coordinates_list_combo.append(coordinates_list)
+
+
+    #Parameters combination 2, Y values 2
+    ystart = 430
+    ystop = 510
+    scale =1
+
+    out_img, coordinates_list = find_cars(frame, ystart, ystop, scale, svc, X_scaler, orient, pix_per_cell,
+                                          cell_per_block, spatial, histbin)
+
+    coordinates_list_combo.append(coordinates_list)
+
+
+    # Parameters combination 3, Y values 1
+    ystart = 400
+    ystop = 600
+    scale = 3
+
+
+    out_img, coordinates_list = find_cars(frame, ystart, ystop, scale, svc, X_scaler, orient, pix_per_cell,
+                                          cell_per_block, spatial, histbin)
+
+    coordinates_list_combo.append(coordinates_list)
+
+
+
+    # Parameters combination 3, Y values 1
+    ystart = 450
+    ystop = 650
+    scale = 3
+
+
+    out_img, coordinates_list = find_cars(frame, ystart, ystop, scale, svc, X_scaler, orient, pix_per_cell,
+                                          cell_per_block, spatial, histbin)
+
+    coordinates_list_combo.append(coordinates_list)
+
+    boxes =  [item for sublist in coordinates_list_combo for item in sublist] # flatten a list of list
+
+
+
+
+    #Display the image as an example
+    # plt.title('Example Image')
+    # plt.imshow(out_img)
+    # plt.show()
 
     heat = np.zeros_like(frame[:, :, 0]).astype(np.float)
 
     # Add heat to each box in box list
-    heat = add_heat(heat, coordinates_list)
+    heat = add_heat(heat, boxes)
 
     # Apply threshold to help remove false positives
     heat = apply_threshold(heat, 1)
@@ -589,51 +723,80 @@ def process_frame(frame):
     # Visualize the heatmap when displaying
     heatmap = np.clip(heat, 0, 255)
 
+
     # Find final boxes from heatmap using label function
     labels = label(heatmap)
     draw_img = draw_labeled_bboxes(np.copy(frame), labels)
+    # plt.imshow(draw_img)
+    # plt.show()
     return draw_img
 
-processed_image2 = process_frame(image2)
-print('showing processed image 2')
-plt.imshow(processed_image2)
-plt.show()
+# processed_image2 = process_frame(image2)
+# print('showing processed image 2')
+# plt.imshow(processed_image2)
+# plt.show()
+#
+# processed_image3 = process_frame(image3)
+# print('showing processed image 3')
+# plt.imshow(processed_image3)
+# plt.show()
+#
+# processed_image4 = process_frame(image4)
+# print('showing processed image 4')
+# plt.imshow(processed_image4)
+# plt.show()
+#
+# processed_image5 = process_frame(image5)
+# print('showing processed image 5')
+# plt.imshow(processed_image5)
+# plt.show()
+#
+# processed_image6 = process_frame(image6)
+# print('showing processed image 6')
+# plt.imshow(processed_image6)
+# plt.show()
 
-processed_image3 = process_frame(image3)
-print('showing processed image 3')
-plt.imshow(processed_image3)
-plt.show()
 
-processed_image4 = process_frame(image4)
-print('showing processed image 4')
-plt.imshow(processed_image4)
-plt.show()
 
-processed_image5 = process_frame(image5)
-print('showing processed image 5')
-plt.imshow(processed_image5)
-plt.show()
+####################### Multiple Windows Search using the Find Cars Function ###########################################
 
-processed_image6 = process_frame(image6)
-print('showing processed image 6')
-plt.imshow(processed_image6)
-plt.show()
+# test_img_multi_win = mpimg.imread('..\\test_images\\test1.jpg') # Windows path
+# test_img_multi_win = mpimg.imread('../test_images/test1.jpg') # Mac OS path
+# draw_img, out_img = process_frame(test_img_multi_win)
+# plt.imshow(draw_img)
+# plt.show()
+
+# print('Showing out img')
+# plt.title('Out img')
+# plt.imshow(out_img)
+# plt.show()
+# print('Showing draw img')
+# plt.title('draw img')
+# plt.imshow(draw_img)
+# plt.show()
+# cv2.waitKey()
+
 
 
 # ############ Read the video #################################
-#
-# output_video = '../test_videos_output/output_video.mp4'
-# project_video = '../test_video.mp4'
+
+# Mac OS Path
+project_video = '../project_video.mp4'
+output_video = '../test_videos_output/output_video_v10.mp4'
+
+# Windows Path
+# project_video = '..\\project_video.mp4'
+# output_video = '..\\test_videos_output\\output_video_v8.mp4'
 # #clip1 = VideoFileClip(project_video).subclip(0,3)
 # #clip1 = VideoFileClip(project_video).subclip(38, 42)
 # clip1 = VideoFileClip(project_video)
-# #print("###################Now running processing frame - video#######")
+# # # #print("###################Now running processing frame - video#######")
 # processed_clip1 = clip1.fl_image(process_frame) #NOTE: this function expects color images!!
 # processed_clip1.write_videofile(output_video, audio=False)
-#
-# # result_process_frame = process_frame(road_image)
-# # cv2.imshow("Result processed frame", result_process_frame)
-# # cv2.waitKey()
+
+# result_process_frame = process_frame(road_image)
+# cv2.imshow("Result processed frame", result_process_frame)
+# cv2.waitKey()
 
 
 
