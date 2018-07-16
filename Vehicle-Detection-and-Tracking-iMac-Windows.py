@@ -124,15 +124,12 @@ def find_cars(img, ystart, ystop, scale, svc, X_scaler, orient, pix_per_cell, ce
             # test_features = X_scaler.transform(np.hstack((shape_feat, hist_feat)).reshape(1, -1))
             test_prediction = svc.predict(test_features)
 
-
-
             if test_prediction == 1 or show_boxes:
-                randomColor = (np.random.randint(0, 255), np.random.randint(0, 255), np.random.randint(0, 255))
                 xbox_left = np.int(xleft * scale)
                 ytop_draw = np.int(ytop * scale)
                 win_draw = np.int(window * scale)
                 cv2.rectangle(draw_img, (xbox_left, ytop_draw + ystart),
-                              (xbox_left + win_draw, ytop_draw + win_draw + ystart), randomColor, 3)
+                              (xbox_left + win_draw, ytop_draw + win_draw + ystart), (0, 0, 255), 6)
                 coordinates = ((xbox_left, (ytop_draw + ystart)), ((xbox_left + win_draw), (ytop_draw + win_draw + ystart)))
                 coordinates_list.append(coordinates)
     #print('Printing the coordinates ', coordinates_list[0])
@@ -186,7 +183,7 @@ def slide_window(img, x_start_stop=[None, None], y_start_stop=[None, None],
 
 
 # Define a function to draw bounding boxes
-def draw_boxes(img, bboxes, color=(0,0,255), thick=6):
+def draw_boxes(img, bboxes, color=(0, 0, 255), thick=6):
     # Make a copy of the image
     imcopy = np.copy(img)
     # Iterate through the bounding boxes
@@ -426,7 +423,7 @@ for image in images:
 
 
 # Use a smaller sample for testing hog features classifier
-sample_size = 5000
+sample_size = 1000
 hog_cars = cars[0:sample_size]
 hog_notcars = notcars[0:sample_size]
 
@@ -546,12 +543,11 @@ print(round(t2-t, 5), 'Seconds to predict', n_predict,'labels with SVC')
 
 #print('hog notcar features', hog_notcar_features[0].shape)
 # print('not car feature len', len(notcar_features.shape()))
-image1 = mpimg.imread('../test_images/test1.jpg') # Mac OS path
-image2 = mpimg.imread('../test_images/test2.jpg')
-image3 = mpimg.imread('../test_images/test3.jpg')
-image4 = mpimg.imread('../test_images/test4.jpg')
-image5 = mpimg.imread('../test_images/test5.jpg')
-image6 = mpimg.imread('../test_images/test6.jpg')
+# image2 = mpimg.imread('../test_images/test2.jpg') # Mac OS path
+# image3 = mpimg.imread('../test_images/test3.jpg')
+# image4 = mpimg.imread('../test_images/test4.jpg')
+# image5 = mpimg.imread('../test_images/test5.jpg')
+# image6 = mpimg.imread('../test_images/test6.jpg')
 #image2 = mpimg.imread('..\\test_images\\test1.jpg') # Windows Path
 # draw_image = np.copy(image2)
 
@@ -612,10 +608,24 @@ image6 = mpimg.imread('../test_images/test6.jpg')
 # plt.show()
 
 def process_frame(frame):
+    # Defining the parameters for hog features
+    # colorspace = 'YCrCb'
+    # orient = 9
+    # pix_per_cell = 8
+    # cell_per_block = 2
+    # hog_channel = 'ALL'
+    # # Specifying spatial and histbin parameters
+    # spatial = (32, 32)
+    # histbin = 32
+
+    # ystart = 400
+    # ystart = 350
+    # ystop = 656
+    # scale = 3
 
     coordinates_list_combo = []
 
-    # Parameters combination 1
+    # Parameters combination 1, Y values 1
     ystart = 400
     ystop = 500
     scale =1.5
@@ -625,7 +635,7 @@ def process_frame(frame):
 
     coordinates_list_combo.append(coordinates_list)
 
-    # Parameters combination 2
+    # Parameters combination 1, Y values 2
     ystart = 430
     ystop = 530
     scale =1.5
@@ -635,9 +645,9 @@ def process_frame(frame):
 
     coordinates_list_combo.append(coordinates_list)
 
-    # Parameters combination 3
-    ystart = 460
-    ystop = 560
+    # Parameters combination 1, Y values 3
+    ystart = 450
+    ystop = 650
     scale =1.5
 
     out_img, coordinates_list = find_cars(frame, ystart, ystop, scale, svc, X_scaler, orient, pix_per_cell,
@@ -645,7 +655,8 @@ def process_frame(frame):
 
     coordinates_list_combo.append(coordinates_list)
 
-    # Parameters combination 3
+
+    #Parameters combination 2, Y values 1
     ystart = 400
     ystop = 480
     scale =1
@@ -655,7 +666,8 @@ def process_frame(frame):
 
     coordinates_list_combo.append(coordinates_list)
 
-    # Parameters combination 4
+
+    #Parameters combination 2, Y values 2
     ystart = 430
     ystop = 510
     scale =1
@@ -665,51 +677,25 @@ def process_frame(frame):
 
     coordinates_list_combo.append(coordinates_list)
 
-    # Parameters combination 5
-    ystart = 370
-    ystop = 540
-    scale =2.5
 
-    out_img, coordinates_list = find_cars(frame, ystart, ystop, scale, svc, X_scaler, orient, pix_per_cell,
-                                          cell_per_block, spatial, histbin)
-
-    coordinates_list_combo.append(coordinates_list)
-
-    # Parameters combination 5
+    # Parameters combination 3, Y values 1
     ystart = 400
-    ystop = 570
-    scale =2.5
+    ystop = 600
+    scale = 3
+
 
     out_img, coordinates_list = find_cars(frame, ystart, ystop, scale, svc, X_scaler, orient, pix_per_cell,
                                           cell_per_block, spatial, histbin)
 
     coordinates_list_combo.append(coordinates_list)
 
-    # Parameters combination 5
-    ystart = 430
-    ystop = 650
-    scale =2.5
 
-    out_img, coordinates_list = find_cars(frame, ystart, ystop, scale, svc, X_scaler, orient, pix_per_cell,
-                                          cell_per_block, spatial, histbin)
 
-    coordinates_list_combo.append(coordinates_list)
-
-    # Parameters combination 5
+    # Parameters combination 3, Y values 1
     ystart = 450
     ystop = 650
     scale = 3
 
-    out_img, coordinates_list = find_cars(frame, ystart, ystop, scale, svc, X_scaler, orient, pix_per_cell,
-                                          cell_per_block, spatial, histbin)
-
-    coordinates_list_combo.append(coordinates_list)
-
-
-    # Parameters combination 4
-    ystart = 400
-    ystop = 500
-    scale =1.2
 
     out_img, coordinates_list = find_cars(frame, ystart, ystop, scale, svc, X_scaler, orient, pix_per_cell,
                                           cell_per_block, spatial, histbin)
@@ -717,6 +703,9 @@ def process_frame(frame):
     coordinates_list_combo.append(coordinates_list)
 
     boxes =  [item for sublist in coordinates_list_combo for item in sublist] # flatten a list of list
+
+
+
 
     #Display the image as an example
     # plt.title('Example Image')
@@ -742,41 +731,30 @@ def process_frame(frame):
     # plt.show()
     return draw_img
 
-processed_image1 = process_frame(image1)
-print('showing processed image 1')
-plt.title('test image 1')
-plt.imshow(processed_image1)
-plt.show()
-
-processed_image2 = process_frame(image2)
-print('showing processed image 2')
-plt.title('test image 2')
-plt.imshow(processed_image2)
-plt.show()
-
-processed_image3 = process_frame(image3)
-print('showing processed image 3')
-plt.title('test image 3')
-plt.imshow(processed_image3)
-plt.show()
-
-processed_image4 = process_frame(image4)
-print('showing processed image 4')
-plt.title('test image 4')
-plt.imshow(processed_image4)
-plt.show()
-
-processed_image5 = process_frame(image5)
-print('showing processed image 5')
-plt.title('test image 5')
-plt.imshow(processed_image5)
-plt.show()
-
-processed_image6 = process_frame(image6)
-print('showing processed image 6')
-plt.title('test image 6')
-plt.imshow(processed_image6)
-plt.show()
+# processed_image2 = process_frame(image2)
+# print('showing processed image 2')
+# plt.imshow(processed_image2)
+# plt.show()
+#
+# processed_image3 = process_frame(image3)
+# print('showing processed image 3')
+# plt.imshow(processed_image3)
+# plt.show()
+#
+# processed_image4 = process_frame(image4)
+# print('showing processed image 4')
+# plt.imshow(processed_image4)
+# plt.show()
+#
+# processed_image5 = process_frame(image5)
+# print('showing processed image 5')
+# plt.imshow(processed_image5)
+# plt.show()
+#
+# processed_image6 = process_frame(image6)
+# print('showing processed image 6')
+# plt.imshow(processed_image6)
+# plt.show()
 
 
 
@@ -813,8 +791,8 @@ output_video = '../test_videos_output/output_video_v11.mp4'
 # #clip1 = VideoFileClip(project_video).subclip(38, 42)
 clip1 = VideoFileClip(project_video)
 # # # #print("###################Now running processing frame - video#######")
-# processed_clip1 = clip1.fl_image(process_frame) #NOTE: this function expects color images!!
-# processed_clip1.write_videofile(output_video, audio=False)
+processed_clip1 = clip1.fl_image(process_frame) #NOTE: this function expects color images!!
+processed_clip1.write_videofile(output_video, audio=False)
 
 # result_process_frame = process_frame(road_image)
 # cv2.imshow("Result processed frame", result_process_frame)
