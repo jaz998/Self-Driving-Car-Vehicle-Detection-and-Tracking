@@ -103,7 +103,7 @@ I chose configuration 9 as my final configurations - based on considerations of 
 
 In different y ranges of the images, cars at different distances and positions relative to the camera tends to appear in different sizes/scales. Different y ranges and scales combinations are run manually on test images to determine the optimal combinations of y values and scale value for cars at particular distances and positions.
 
-The below are some of the y values ranges and scales combinations used. For all the combinations used, refer code line 618 through line 717.
+The below are some of the y values ranges and scales combinations used. For all the combinations used, refer code line 618 through line 717. There are ten combinations used in total. 
 
     ystart = 400
     ystop = 500
@@ -170,7 +170,14 @@ Here's an example result showing the heatmap from a series of frames of video, t
 
 ### Here are six frames and their corresponding heatmaps:
 
-![](images/.png)
+![](images/frame1.png)
+![](images/frame1heat.png)
+
+![](images/frame2.png)
+![](images/frame2heat.png)
+
+![](images/frame3.png)
+![](images/frame3heat.png)
 
 ### Here is the output of `scipy.ndimage.measurements.label()` on the integrated heatmap from all six frames:
 ![](images/.png)
