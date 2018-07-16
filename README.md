@@ -103,17 +103,39 @@ I chose configuration 9 as my final configurations - based on considerations of 
 
 In different y ranges of the images, cars at different distances and positions relative to the camera tends to appear in different sizes/scales. Different y ranges and scales combinations are run manually on test images to determine the optimal combinations of y values and scale value for cars at particular distances and positions.
 
-For images like the below, I found that the the optimal combinations are 500 to 400 of y pixel positions and scale of 1.5. The below image shows the y ranges search with such a scale.  
+The below are some of the y values ranges and scales combinations used. For all the combinations used, refer code line 618 through line 717.
 
+    ystart = 400
+    ystop = 500
+    scale =1.5
+    
 ![](images/para_1.png)
 
-For images like the below, I found that the the optimal combinations are 400 to 480 of y pixel positions and scale of 1. The below image shows the y ranges search with such a scale.  
+    ystart = 430
+    ystop = 530
+    scale =1.5
 
 ![](images/para_2.png)
 
-For performance reasons, I also use a few large scale windows search for the lowre half of the camera image with y values of 400 to 500 with a scale of 3. The below image shows the y ranges search with such a scale.  
+    ystart = 370
+    ystop = 540
+    scale =2.5
 
 ![](images/para_3.png)
+
+    ystart = 400
+    ystop = 570
+    scale =2.5
+    
+![](images/para_4.png)
+
+
+
+
+
+
+
+
 
 I then combine these y values and scale values in the pipeline. I also move the y values by a certain number for each of the three value combination above to capture cars in somewhat different positions, while keeping the scale values the same. See code line 619 through to line 678 for the implementations. 
 
@@ -123,11 +145,14 @@ I then combine these y values and scale values in the pipeline. I also move the 
 
 The pipeline uses the find_cars function first and then use heat map to remove false positives. 
 
-Ultimately I searched on two scales using YCrCb 3-channel HOG features plus spatially binned color and histograms of color in the feature vector, which provided a nice result.  Here are some example images:
+Ultimately I searched on two scales using YCrCb 3-channel HOG features plus spatially binned color and histograms of color in the feature vector, which provided a nice result.  Here are results of the pipeline run on the six test images. 
 
-![](images/pro_img1.png)
-![](images/pro_img4.png)
-![](images/pro_img6.png)
+![](images/test_image_1.png)
+![](images/test_image_2.png)
+![](images/test_image_3.png)
+![](images/test_image_4.png)
+![](images/test_image_5.png)
+![](images/test_image_6.png)
 
 ---
 
