@@ -168,22 +168,17 @@ I recorded the positions of positive detections in each frame of the video.  Fro
 
 Here's an example result showing the heatmap from a series of frames of video, the result of `scipy.ndimage.measurements.label()` and the bounding boxes then overlaid on the last frame of video:
 
-### Here are six frames and their corresponding heatmaps:
+### Here is test image 1, the positive detections and their corresponding heatmaps:
 
-![](images/frame1.png)
-![](images/frame1heat.png)
-
-![](images/frame2.png)
-![](images/frame2heat.png)
-
-![](images/frame3.png)
-![](images/frame3heat.png)
+![](images/test1.jpg)
+![](images/positive_detect_img.png)
+![](images/test1heat.png)
 
 ### Here is the output of `scipy.ndimage.measurements.label()` on the integrated heatmap from all six frames:
-![](images/.png)
+![](images/test1labels.png)
 
 ### Here the resulting bounding boxes are drawn onto the last frame in the series:
-![](images/.png)
+![](images/test1result.png)
 
 
 
@@ -194,4 +189,12 @@ Here's an example result showing the heatmap from a series of frames of video, t
 #### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
 Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further.  
+
+At first I used YCrCb colorspace, HOG features, color features and a single range Y values and scale as search windows. But this approach resulted in a pipeline that performs poorly. 
+
+And then I refined the approach by fine-turning the classifer parameters (see performance comparision table above) and trying various Y values and scales as search windows and the use those I believe are the best ones in a multiple-search windows setting. The results (after some trials and errors) are a lot better and have successfully identified cars in all test images. It also identify cars reliably in the project test video. 
+
+The search windows and the pipeline in general are optimised for the cars and conditions in the project video. For very different vehicle sizes and/or conditions (say trucks or at night) the pipeline may fail. I can try to incorporate vehicle of different sizes and also other lighting and weather conditions (couldy, raining and night). This should make the pipeline more robust. 
+
+Another issue is that the processing of the project video (about 50 seconds) takes a long time (about 30 minutes) . Further optimization of codes to improve speed are desirable for the use in self-driving cars. 
 
