@@ -60,7 +60,7 @@ def convert_color(img, conv='RGB2YCrCb'):
 
 
 # Define a single function that can extract features using hog sub-sampling and make predictions
-def find_cars(img, ystart, ystop, scale, svc, X_scaler, orient, pix_per_cell, cell_per_block, spatial_size, hist_bins, show_boxes = False):
+def find_cars(img, ystart, ystop, scale, svc, X_scaler, orient, pix_per_cell, cell_per_block, spatial_size, hist_bins, show_boxes = True):
     coordinates_list = []
 
     draw_img = np.copy(img)
@@ -186,14 +186,13 @@ def slide_window(img, x_start_stop=[None, None], y_start_stop=[None, None],
 
 
 # Define a function to draw bounding boxes
-def draw_boxes(img, bboxes, thick=3):
+def draw_boxes(img, bboxes, color=(0,0,255), thick=6):
     # Make a copy of the image
     imcopy = np.copy(img)
     # Iterate through the bounding boxes
     for bbox in bboxes:
-        randomColor = (np.random.randint(0, 255), np.random.randint(0, 255), np.random.randint(0, 255))
         # Draw a rectangle given bbox coordinates
-        cv2.rectangle(imcopy, bbox[0], bbox[1], randomColor, thick)
+        cv2.rectangle(imcopy, bbox[0], bbox[1], color, thick)
     # Return the image copy with boxes drawn
     return imcopy
 
@@ -736,11 +735,7 @@ def process_frame(frame):
 
     boxes =  [item for sublist in coordinates_list_combo for item in sublist] # flatten a list of list
 
-    # Drawing the image with positive detections
-    positive_detect_img = draw_boxes(frame, boxes)
-    plt.title('Positive detections image')
-    plt.imshow(positive_detect_img)
-    plt.show()
+
 
     heat = np.zeros_like(frame[:, :, 0]).astype(np.float)
 
@@ -753,60 +748,46 @@ def process_frame(frame):
     # Visualize the heatmap when displaying
     heatmap = np.clip(heat, 0, 255)
 
-    # Show the heatmap
-    plt.title('Heat Map')
-    plt.imshow(heatmap)
-    plt.show()
 
     # Find final boxes from heatmap using label function
     labels = label(heatmap)
     draw_img = draw_labeled_bboxes(np.copy(frame), labels)
-
-    # # Show the labels
-    plt.title('Labels')
-    plt.imshow(labels[0], cmap='gray')
-    plt.show()
-
-    plt.title('Resulting Image')
-    plt.imshow(draw_img)
-    plt.show()
-
-
-
+    # plt.imshow(draw_img)
+    # plt.show()
     return draw_img
 
 processed_image1 = process_frame(image1)
 print('showing processed image 1')
-#plt.title('test image 1')
-# # plt.imshow(processed_image1)
-# # plt.show()
+plt.title('test image 1')
+plt.imshow(processed_image1)
+plt.show()
 # #
-processed_image2 = process_frame(image2)
-print('showing processed image 2')
+# processed_image2 = process_frame(image2)
+# print('showing processed image 2')
 # # plt.title('test image 2')
 # # plt.imshow(processed_image2)
 # # plt.show()
 # #
-processed_image3 = process_frame(image3)
-print('showing processed image 3')
+# processed_image3 = process_frame(image3)
+# print('showing processed image 3')
 # # plt.title('test image 3')
 # # plt.imshow(processed_image3)
 # # plt.show()
 # #
-processed_image4 = process_frame(image4)
-print('showing processed image 4')
+# processed_image4 = process_frame(image4)
+# print('showing processed image 4')
 # # plt.title('test image 4')
 # # plt.imshow(processed_image4)
 # # plt.show()
 # #
-processed_image5 = process_frame(image5)
-print('showing processed image 5')
+# processed_image5 = process_frame(image5)
+# print('showing processed image 5')
 # # plt.title('test image 5')
 # # plt.imshow(processed_image5)
 # # plt.show()
 # #
-processed_image6 = process_frame(image6)
-print('showing processed image 6')
+# processed_image6 = process_frame(image6)
+# print('showing processed image 6')
 # # plt.title('test image 6')
 # # plt.imshow(processed_image6)
 # # plt.show()
@@ -837,8 +818,7 @@ print('showing processed image 6')
 
 # Mac OS Path
 project_video = '../project_video.mp4'
-#project_video = '../test_video.mp4'
-output_video = '../test_videos_output/output_video_v15.mp4'
+output_video = '../test_videos_output/output_video_v12.mp4'
 
 # Windows Path
 # project_video = '..\\project_video.mp4'
