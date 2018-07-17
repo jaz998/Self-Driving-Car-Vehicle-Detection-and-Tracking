@@ -189,3 +189,11 @@ Here's an example result showing the heatmap from a series of frames of video, t
 
 Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further.  
 
+At first I used YCrCb colorspace, HOG features, color features and a single range Y values and scale as search windows. But this approach resulted in a pipeline that performs poorly. 
+
+And then I refined the approach by fine-turning the classifer parameters (see performance comparision table above) and trying various Y values and scales as search windows and the use those I believe are the best ones in a multiple-search windows setting. The results (after some trials and errors) are a lot better and have successfully identified cars in all test images. It also identify cars reliably in the project test video. 
+
+The search windows and the pipeline in general are optimised for the cars and conditions in the project video. For very different vehicle sizes and/or conditions (say trucks or at night) the pipeline may fail. I can try to incorporate vehicle of different sizes and also other lighting and weather conditions (couldy, raining and night). This should make the pipeline more robust. 
+
+Another issue is that the processing of the project video (about 50 seconds) takes a long time (about 30 minutes) . Further optimization of codes to improve speed are desirable for the use in self-driving cars. 
+
