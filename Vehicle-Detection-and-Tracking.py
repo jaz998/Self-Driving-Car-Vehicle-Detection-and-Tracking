@@ -13,6 +13,9 @@ from scipy.ndimage.measurements import label
 from moviepy.editor import VideoFileClip
 
 
+# Define a class to record detection of vehicles in previous frames
+
+
 def add_heat(heatmap, bbox_list):
     # Iterate through list of bboxes
     for box in bbox_list:
@@ -289,7 +292,7 @@ def single_img_features(img, color_space='RGB', spatial_size=(32, 32),
 def get_hog_features(img, orient, pix_per_cell, cell_per_block, vis=False,
                      feature_vec=True):
     """
-    Function accepts params and returns HOG features (optionally flattened) and an optional matrix for 
+    Function accepts params and returns HOG features (optionally flattened) and an optional matrix for
     visualization. Features will always be the first return (flattened if feature_vector= True).
     A visualization matrix will be the second return if visualize = True.
     """
@@ -427,13 +430,13 @@ for image in images:
 
 
 # Use a smaller sample for testing hog features classifier
-sample_size = 5000
-hog_cars = cars[0:sample_size]
-hog_notcars = notcars[0:sample_size]
+# sample_size = 5000
+# hog_cars = cars[0:sample_size]
+# hog_notcars = notcars[0:sample_size]
 
 # Full sample
-# hog_cars = cars
-# hog_notcars = notcars
+hog_cars = cars
+hog_notcars = notcars
 
 print('Number of car_images', len(hog_cars))
 print('Number of non_car images:', len(hog_notcars))
@@ -737,10 +740,10 @@ def process_frame(frame):
     boxes =  [item for sublist in coordinates_list_combo for item in sublist] # flatten a list of list
 
     # Drawing the image with positive detections
-    positive_detect_img = draw_boxes(frame, boxes)
-    plt.title('Positive detections image')
-    plt.imshow(positive_detect_img)
-    plt.show()
+    # positive_detect_img = draw_boxes(frame, boxes)
+    # plt.title('Positive detections image')
+    # plt.imshow(positive_detect_img)
+    # plt.show()
 
     heat = np.zeros_like(frame[:, :, 0]).astype(np.float)
 
@@ -748,68 +751,252 @@ def process_frame(frame):
     heat = add_heat(heat, boxes)
 
     # Apply threshold to help remove false positives
-    heat = apply_threshold(heat, 1)
+    heat = apply_threshold(heat, 1.5)
 
     # Visualize the heatmap when displaying
     heatmap = np.clip(heat, 0, 255)
 
-    # Show the heatmap
-    plt.title('Heat Map')
-    plt.imshow(heatmap)
-    plt.show()
+    # # Show the heatmap
+    # plt.title('Heat Map')
+    # plt.imshow(heatmap)
+    # plt.show()
 
     # Find final boxes from heatmap using label function
     labels = label(heatmap)
     draw_img = draw_labeled_bboxes(np.copy(frame), labels)
 
-    # # Show the labels
-    plt.title('Labels')
-    plt.imshow(labels[0], cmap='gray')
-    plt.show()
+    # # # Show the labels
+    # plt.title('Labels')
+    # plt.imshow(labels[0], cmap='gray')
+    # plt.show()
+    #
+    # plt.title('Resulting Image')
+    # plt.imshow(draw_img)
+    # plt.show()
 
-    plt.title('Resulting Image')
-    plt.imshow(draw_img)
-    plt.show()
+    return draw_img
+
+class Previous_Frames():
+    def __init__(self):
+        self.previous_frame_boxes = []
+
+    def add_boxes(self, boxes):
+        self.previous_frame_boxes.append(boxes)
+        if len(self.previous_frame_boxes) > 10:
+            self.previous_frame_boxes = self.previous_frame_boxes[len(self.previous_frame_boxes)-10:]
+
+
+previous_frames = Previous_Frames()
+
+
+def process_frame_with_previous_frame_info(frame):
+
+    coordinates_list_combo = []
+
+    # Parameters combination 1
+    ystart = 400
+    ystop = 500
+    scale =1.5
+
+    out_img, coordinates_list = find_cars(frame, ystart, ystop, scale, svc, X_scaler, orient, pix_per_cell,
+                                          cell_per_block, spatial, histbin)
+
+    coordinates_list_combo.append(coordinates_list)
+
+
+
+    # Parameters combination 2
+    ystart = 430
+    ystop = 530
+    scale =1.5
+
+    out_img, coordinates_list = find_cars(frame, ystart, ystop, scale, svc, X_scaler, orient, pix_per_cell,
+                                          cell_per_block, spatial, histbin)
+
+    coordinates_list_combo.append(coordinates_list)
+
+
+
+    # Parameters combination 3
+    ystart = 460
+    ystop = 560
+    scale =1.5
+
+    out_img, coordinates_list = find_cars(frame, ystart, ystop, scale, svc, X_scaler, orient, pix_per_cell,
+                                          cell_per_block, spatial, histbin)
+
+    coordinates_list_combo.append(coordinates_list)
+
+
+
+    # Parameters combination 4
+    ystart = 400
+    ystop = 480
+    scale =1
+
+    out_img, coordinates_list = find_cars(frame, ystart, ystop, scale, svc, X_scaler, orient, pix_per_cell,
+                                          cell_per_block, spatial, histbin)
+
+    coordinates_list_combo.append(coordinates_list)
+
+
+    # Parameters combination 5
+    ystart = 430
+    ystop = 510
+    scale =1
+
+    out_img, coordinates_list = find_cars(frame, ystart, ystop, scale, svc, X_scaler, orient, pix_per_cell,
+                                          cell_per_block, spatial, histbin)
+
+    coordinates_list_combo.append(coordinates_list)
+
+
+
+    # Parameters combination 6
+    ystart = 370
+    ystop = 540
+    scale =2.5
+
+    out_img, coordinates_list = find_cars(frame, ystart, ystop, scale, svc, X_scaler, orient, pix_per_cell,
+                                          cell_per_block, spatial, histbin)
+
+    coordinates_list_combo.append(coordinates_list)
+
+
+    # Parameters combination 7
+    ystart = 400
+    ystop = 570
+    scale =2.5
+
+    out_img, coordinates_list = find_cars(frame, ystart, ystop, scale, svc, X_scaler, orient, pix_per_cell,
+                                          cell_per_block, spatial, histbin)
+
+    coordinates_list_combo.append(coordinates_list)
+
+
+
+    # Parameters combination 8
+    ystart = 430
+    ystop = 650
+    scale =2.5
+
+    out_img, coordinates_list = find_cars(frame, ystart, ystop, scale, svc, X_scaler, orient, pix_per_cell,
+                                          cell_per_block, spatial, histbin)
+
+    coordinates_list_combo.append(coordinates_list)
+
+
+    # Parameters combination 9
+    ystart = 450
+    ystop = 650
+    scale = 3
+
+    out_img, coordinates_list = find_cars(frame, ystart, ystop, scale, svc, X_scaler, orient, pix_per_cell,
+                                          cell_per_block, spatial, histbin)
+
+    coordinates_list_combo.append(coordinates_list)
+
+    # Parameters combination 10
+    ystart = 400
+    ystop = 500
+    scale =1.2
+
+    out_img, coordinates_list = find_cars(frame, ystart, ystop, scale, svc, X_scaler, orient, pix_per_cell,
+                                          cell_per_block, spatial, histbin)
+
+    coordinates_list_combo.append(coordinates_list)
+
+    # #Display the image as an example
+    # plt.title('Parameters Image')
+    # plt.imshow(out_img)
+    # plt.show()
+
+    boxes =  [item for sublist in coordinates_list_combo for item in sublist] # flatten a list of list
+
+    # # Drawing the image with positive detections
+    # positive_detect_img = draw_boxes(frame, boxes)
+    # plt.title('Positive detections image')
+    # plt.imshow(positive_detect_img)
+    # plt.show()
+
+    heat = np.zeros_like(frame[:, :, 0]).astype(np.float)
+
+    # Add heat to each box in box list
+    heat = add_heat(heat, boxes)
+
+
+
+    # Visualize the heatmap when displaying
+    heatmap = np.clip(heat, 0, 255)
+
+    # # Show the heatmap
+    # plt.title('Heat Map')
+    # plt.imshow(heatmap)
+    # plt.show()
+
+
+
+    # # # Show the labels
+    # plt.title('Labels')
+    # plt.imshow(labels[0], cmap='gray')
+    # plt.show()
+    #
+    # plt.title('Resulting Image')
+    # plt.imshow(draw_img)
+    # plt.show()
+
+    if len(boxes) > 0:
+        previous_frames.add_boxes(boxes)
+
+    for boxes_per_frame in previous_frames.previous_frame_boxes:
+        heat = add_heat(heat, boxes_per_frame)
+        # Apply threshold to help remove false positives
+    heat = apply_threshold(heat, 1 + len(previous_frames.previous_frame_boxes)//2)
+
+    # Find final boxes from heatmap using label function
+    labels = label(heat)
+    draw_img = draw_labeled_bboxes(np.copy(frame), labels)
+
 
 
 
     return draw_img
 
-processed_image1 = process_frame(image1)
-print('showing processed image 1')
-#plt.title('test image 1')
-# # plt.imshow(processed_image1)
-# # plt.show()
-# #
-processed_image2 = process_frame(image2)
-print('showing processed image 2')
-# # plt.title('test image 2')
-# # plt.imshow(processed_image2)
-# # plt.show()
-# #
-processed_image3 = process_frame(image3)
-print('showing processed image 3')
-# # plt.title('test image 3')
-# # plt.imshow(processed_image3)
-# # plt.show()
-# #
-processed_image4 = process_frame(image4)
-print('showing processed image 4')
-# # plt.title('test image 4')
-# # plt.imshow(processed_image4)
-# # plt.show()
-# #
-processed_image5 = process_frame(image5)
-print('showing processed image 5')
-# # plt.title('test image 5')
-# # plt.imshow(processed_image5)
-# # plt.show()
-# #
-processed_image6 = process_frame(image6)
-print('showing processed image 6')
-# # plt.title('test image 6')
-# # plt.imshow(processed_image6)
-# # plt.show()
+# processed_image1 = process_frame(image1)
+# print('showing processed image 1')
+# #plt.title('test image 1')
+# # # plt.imshow(processed_image1)
+# # # plt.show()
+# # #
+# processed_image2 = process_frame(image2)
+# print('showing processed image 2')
+# # # plt.title('test image 2')
+# # # plt.imshow(processed_image2)
+# # # plt.show()
+# # #
+# processed_image3 = process_frame(image3)
+# print('showing processed image 3')
+# # # plt.title('test image 3')
+# # # plt.imshow(processed_image3)
+# # # plt.show()
+# # #
+# processed_image4 = process_frame(image4)
+# print('showing processed image 4')
+# # # plt.title('test image 4')
+# # # plt.imshow(processed_image4)
+# # # plt.show()
+# # #
+# processed_image5 = process_frame(image5)
+# print('showing processed image 5')
+# # # plt.title('test image 5')
+# # # plt.imshow(processed_image5)
+# # # plt.show()
+# # #
+# processed_image6 = process_frame(image6)
+# print('showing processed image 6')
+# # # plt.title('test image 6')
+# # # plt.imshow(processed_image6)
+# # # plt.show()
 
 
 
@@ -838,17 +1025,18 @@ print('showing processed image 6')
 # Mac OS Path
 project_video = '../project_video.mp4'
 #project_video = '../test_video.mp4'
-output_video = '../test_videos_output/output_video_v15.mp4'
+output_video = '../test_videos_output/output_video_v16_prev3.mp4'
 
 # Windows Path
-# project_video = '..\\project_video.mp4'
+#project_video = '..\\project_video.mp4'
 # output_video = '..\\test_videos_output\\output_video_v8.mp4'
-# #clip1 = VideoFileClip(project_video).subclip(0,3)
+#clip1 = VideoFileClip(project_video).subclip(0,3)
 # #clip1 = VideoFileClip(project_video).subclip(38, 42)
 clip1 = VideoFileClip(project_video)
 # # # #print("###################Now running processing frame - video#######")
-# processed_clip1 = clip1.fl_image(process_frame) #NOTE: this function expects color images!!
-# processed_clip1.write_videofile(output_video, audio=False)
+#processed_clip1 = clip1.fl_image(process_frame) #NOTE: this function expects color images!!
+processed_clip1 = clip1.fl_image(process_frame_with_previous_frame_info) #NOTE: this function expects color images!!
+processed_clip1.write_videofile(output_video, audio=False)
 
 # result_process_frame = process_frame(road_image)
 # cv2.imshow("Result processed frame", result_process_frame)
