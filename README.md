@@ -164,9 +164,9 @@ Here's a [link to my video result](./project_video.mp4)
 
 #### 2. Describe how (and identify where in your code) you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.
 
-I recorded the positions of positive detections in each frame of the video.  From the positive detections I created a heatmap and then thresholded that map to identify vehicle positions.  I then used `scipy.ndimage.measurements.label()` to identify individual blobs in the heatmap.  I then assumed each blob corresponded to a vehicle.  I constructed bounding boxes to cover the area of each blob detected. See code line 715 to 729 for the implementations.   
+I recorded the positions of positive detections in each frame of the video.  From the positive detections I created a heatmap and then thresholded that map to identify vehicle positions.  I then used `scipy.ndimage.measurements.label()` to identify individual blobs in the heatmap.  I then assumed each blob corresponded to a vehicle.  I constructed bounding boxes to cover the area of each blob detected. See code line 715 to 729 for the implementations.  
 
-Here's an example result showing the heatmap from a series of frames of video, the result of `scipy.ndimage.measurements.label()` and the bounding boxes then overlaid on the last frame of video:
+A heat threshold of 1 is used for the below image
 
 ### Here is test image 1, the positive detections and their corresponding heatmaps:
 
@@ -192,7 +192,12 @@ Here I'll talk about the approach I took, what techniques I used, what worked an
 
 At first I used YCrCb colorspace, HOG features, color features and a single range Y values and scale as search windows. But this approach resulted in a pipeline that performs poorly. 
 
-And then I refined the approach by fine-turning the classifer parameters (see performance comparision table above) and trying various Y values and scales as search windows and the use those I believe are the best ones in a multiple-search windows setting. The results (after some trials and errors) are a lot better and have successfully identified cars in all test images. It also identify cars reliably in the project test video. 
+And then I refined the approach by fine-turning the classifer parameters (see performance comparision table above) and trying various Y values and scales as search windows and the use those I believe are the best ones in a multiple-search windows setting. I also use a heat threshold of 1. This works on the six test images, which detects all the cars with no false positives. However, when I ran the pipeline on the video it prodcued many false positives. 
+
+After the above I took into account previous frames detections into the pipelne (see code lines 779 through 963. This pipeline produces a video that reliably identify the cars with minimal false positives. 
+
+
+### Limitations
 
 The search windows and the pipeline in general are optimised for the cars and conditions in the project video. For very different vehicle sizes and/or conditions (say trucks or at night) the pipeline may fail. I can try to incorporate vehicle of different sizes and also other lighting and weather conditions (couldy, raining and night). This should make the pipeline more robust. 
 
