@@ -194,7 +194,7 @@ At first I used YCrCb colorspace, HOG features, color features and a single rang
 
 And then I refined the approach by fine-turning the classifer parameters (see performance comparision table above) and trying various Y values and scales as search windows and the use those I believe are the best ones in a multiple-search windows setting. I also use a heat threshold of 1. This works on the six test images, which detects all the cars with no false positives. However, when I ran the pipeline on the video it prodcued many false positives. 
 
-After the above I took into account previous frames detections into the pipelne (see code lines 779 through 963. This pipeline produces a video that reliably identify the cars with minimal false positives. 
+After the above I took into account previous frames detections into the pipelne (see code lines 779 through 963). This version of the pipeline produces a video that reliably identify the cars with minimal false positives. 
 
 
 ### Limitations
